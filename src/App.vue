@@ -14,6 +14,7 @@
     </div>
   </a-config-provider>
 </template>
+
 <script>
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 
@@ -30,16 +31,24 @@ export default {
 #app {
   margin: 0 auto;
   user-select: text;
-
   img {
+    max-width: 100%;
+    height: auto;
     user-select: none;
   }
 }
+
 .page-app {
   background: #fff;
   height: 100vh;
-  //min-width: 1200px;
-  overflow-y: hidden;
-  overflow-x: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .page-app {
+    padding: 10px;
+  }
 }
 </style>

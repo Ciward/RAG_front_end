@@ -18,51 +18,32 @@
     </div>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { getLanguage } from '@/language/index';
 
 const home = getLanguage().home;
-// const props = defineProps({
-//   show: {
-//     require: true,
-//     type: Boolean,
-//   },
-// });
-
 const emits = defineEmits(['update']);
-defineProps({
-  acceptList: {
-    require: true,
-    type: Array,
-    default: () => {
-      return [];
-    },
-  },
-});
-
-// const input = ref(null);
-
-// const change = e => {
-//   console.log(e);
-//   const files = e.target.files;
-//   console.log(files);
-
-//   emits('update', false, files);
-// };
 
 const upload = () => {
   emits('update');
 };
 </script>
+
 <style lang="scss" scoped>
 .upload-box {
   position: relative;
-  width: 800px;
+  width: 100%;
+  max-width: 800px;
   height: 340px;
   background: #fff;
   box-sizing: border-box;
   border: 1px dashed #cecece;
   border-radius: 12px;
+  @media (max-width: 768px) {
+    height: 200px;
+    border: 1px dashed #b0b0b0;
+  }
 }
 
 .tips {
@@ -76,21 +57,26 @@ const upload = () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   .icon-file {
-    width: 110px;
-    height: 110px;
+    width: 80px;
+    height: 80px;
+    @media (max-width: 768px) {
+      width: 60px;
+      height: 60px;
+    }
   }
-
-  .titie {
+  .title {
     margin-top: 12px;
     font-size: 20px;
     font-weight: 600;
     color: $title1;
+    @media (max-width: 768px) {
+      font-size: 16px;
+    }
   }
-
   .desc-content {
-    width: 599px;
+    width: 100%;
+    max-width: 600px;
     margin: 12px 0 20px 0;
     .desc {
       width: 100%;
@@ -98,6 +84,9 @@ const upload = () => {
       font-size: 14px;
       font-weight: normal;
       color: $title2;
+      @media (max-width: 768px) {
+        font-size: 12px;
+      }
     }
   }
 }

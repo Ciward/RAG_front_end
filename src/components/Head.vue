@@ -49,7 +49,7 @@
             <span>{{ header.cooperationMore }}</span>
           </template>
           <div class="myspan">
-            <img src="../assets/home/icon-email.png" alt="合作咨询" />
+            <img src="../assets/home/icon-email.png" alt="问题反馈" />
             <span>{{ header.cooperation }}</span>
           </div>
         </a-popover>

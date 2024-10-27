@@ -418,7 +418,7 @@ function checkKbSelect() {
   if (!selectList.value.length) {
     return;
   }
-  // 删除知识库时不会删除对话里表中已经选中的知识库id  所以每次问答前都要校验一下这个知识库id还存不存在
+  // 删除知识库时不删除对话里表中已选中的知识库id  所以每次问答前都要校验一下这个知识库id还存不存在
   const list = [];
   selectList.value.forEach(kbId => {
     if (knowledgeBaseList.value.some(item => item.kb_id === kbId)) {
