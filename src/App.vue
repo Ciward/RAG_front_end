@@ -32,8 +32,8 @@ export default {
   margin: 0 auto;
   user-select: text;
   img {
-    max-width: 100%;
-    height: auto;
+    // max-width: 100%;
+    // height: auto;
     user-select: none;
   }
 }

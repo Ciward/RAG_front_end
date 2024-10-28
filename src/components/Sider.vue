@@ -316,7 +316,6 @@ onUnmounted(() => {
     }
   }
 }
-
 .content {
   flex: 1;
   margin-bottom: 20px;
