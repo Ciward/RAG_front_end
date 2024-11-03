@@ -179,12 +179,12 @@
                   <SvgIcon name="chat-delete" />
                 </span>
               </a-popover>
-              <a-popover>
+              <!-- <a-popover>
                 <template #content>{{ common.modelSettingTitle }}</template>
                 <span class="setting" @click="handleModalChange(true)">
                   <SvgIcon name="chat-setting" />
                 </span>
-              </a-popover>
+              </a-popover> -->
               <a-button type="primary" :disabled="showLoading" shape="circle" @click="send">
                 <SvgIcon name="sendplane" />
               </a-button>
@@ -714,11 +714,11 @@ const confirm = async () => {
 };
 
 // 模型设置弹窗相关
-const { showSettingModal } = storeToRefs(useChat());
+// const { showSettingModal } = storeToRefs(useChat());
 
-const handleModalChange = newVal => {
-  showSettingModal.value = newVal;
-};
+// const handleModalChange = newVal => {
+//   showSettingModal.value = newVal;
+// };
 
 // 模型配置是否正确
 const chatSettingForDialogRef = ref<InstanceType<typeof ChatSettingDialog>>();

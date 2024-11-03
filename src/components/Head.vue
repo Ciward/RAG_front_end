@@ -54,7 +54,7 @@
           </div>
         </a-popover>
       </li>
-      <li>
+      <li v-if="false">
         <div class="myspan" @click="goStatistics">
           <LineChartOutlined style="margin-right: 5px" />
           <span>{{ header.statistics }}</span>
@@ -80,18 +80,18 @@ const { setNavIndex } = useHeader();
 const { changePage } = routeController();
 
 const navList = [
-  {
-    name: getLanguage().header.quickStart,
-    value: 2,
-  },
+  // {
+  //   name: getLanguage().header.quickStart,
+  //   value: 2,
+  // },
   {
     name: getLanguage().header.knowledge,
     value: 0,
   },
-  {
-    name: 'Bots',
-    value: 1,
-  },
+  // {
+  //   name: 'Bots',
+  //   value: 1,
+  // },
 ];
 
 const changLanguage = (lang: string) => {

@@ -12,16 +12,14 @@
     <Head />
     <a-layout>
       <!-- 使用响应式断点 -->
-      <a-layout-sider
+      <!-- <a-layout-sider
         :width="isMobile ? 200 : 280"
         :collapsed-width="isMobile ? 0 : 80"
         :breakpoint="'md'"
-        @collapsedChange="handleCollapsedChange"
-        style="background: #fff"
+        style="background: #26293b"
       >
-        <Sider />
-      </a-layout-sider>
-      <a-layout>
+      </a-layout-sider> -->
+      <a-layout class="blacker">
         <a-layout-content class="main">
           <router-view></router-view>
         </a-layout-content>
@@ -31,20 +29,25 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+// import { ref } from 'vue';
 import Head from '@/components/Head.vue';
-import Sider from '@/components/Sider.vue';
+// import Sider from '@/components/Sider.vue';
 
-const isMobile = ref(false);
+// const isMobile = ref(false);
 
-const handleCollapsedChange = (collapsed: boolean) => {
-  isMobile.value = collapsed;
-};
+// const handleCollapsedChange = (collapsed: boolean) => {
+//   isMobile.value = collapsed;
+// };
 </script>
 
 <style lang="scss" scoped>
 .main {
-  padding: 16px;
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+.blacker {
+  background-color: #525569;
 }
 
 /* 响应式调整 */

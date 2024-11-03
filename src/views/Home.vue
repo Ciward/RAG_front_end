@@ -50,13 +50,13 @@ onMounted(() => {
   //padding-top: 0;
   width: 100%;
   height: 100%;
-  background-color: #26293b;
+  background-color: #0026ff;
+  border-radius: 12px 12px 12px 12px;
 
   .initing {
     width: 100%;
     height: 100%;
     background: #f3f6fd;
-    border-radius: 12px 0 0 0;
   }
 }
 </style>
