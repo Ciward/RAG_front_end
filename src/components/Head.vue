@@ -38,7 +38,7 @@
         <span class="line"></span>
         <span :class="[language === 'en' ? 'active' : '']" @click="changLanguage('en')">En</span>
       </li>
-      <li>
+      <li v-if="false">
         <a-popover placement="bottomRight">
           <template #content>
             <p>010-82558901（商务）</p>

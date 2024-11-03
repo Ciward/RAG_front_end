@@ -128,7 +128,7 @@ export default defineConfig(({ mode }) => {
         //   secure: false,
         // },
         '/local_doc_qa': {
-          target: 'http://10.102.33.6:8777/api',
+          target: 'http://10.102.33.130:8777/api',
           changeOrigin: true,
           rewrite: path => path.replace(/^\/local_doc_qa/, '/local_doc_qa'),
         },
