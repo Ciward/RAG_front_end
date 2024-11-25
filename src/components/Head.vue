@@ -92,6 +92,10 @@ const navList = [
   //   name: 'Bots',
   //   value: 1,
   // },
+  {
+    name: getLanguage().header.qa,
+    value: 3,
+  },
 ];
 
 const changLanguage = (lang: string) => {
@@ -115,6 +119,8 @@ const setNavIdx = value => {
     changePage('/bots');
   } else if (value === 2) {
     changePage('/quickstart');
+  } else if (value === 3) {
+    changePage('/qa');
   }
 };
 
@@ -123,6 +129,7 @@ const iconMap = new Map([
   [0, 'knowledge-icon'],
   [1, 'bot-icon'],
   [2, 'quick-icon'],
+  // [3, 'qa-icon'],
 ]);
 const getIcon = itemValue => {
   return iconMap.get(itemValue);
