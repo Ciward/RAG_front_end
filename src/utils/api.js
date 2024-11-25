@@ -42,7 +42,7 @@ axios.interceptors.response.use(
   }
 );
 
-let base = 'http://10.102.33.6:8082';
+let base = import.meta.env.VITE_APP_MODE === 'dev' ? '' : import.meta.env.VITE_APP_API_HOST;
 
 /*
 登录请求方法，与服务端Spring Security的登录接口对接
