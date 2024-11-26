@@ -31,8 +31,12 @@
     <ul>
       <!-- <li @click="goDetail('https://ai.youdao.com/qanything.s')">
         <img src="../assets/home/icon-home.png" alt="首页" /><span>首页</span>
+      </li>-->
+      <!-- 用户信息 -->
+      <li @click="goToUser">
+        <img src="../assets/home/icon-user.png" alt="用户信息" />
+        <span></span>
       </li>
-      <li><img src="../assets/home/icon-document.png" alt="开发文档" /><span>开发文档</span></li> -->
       <li class="toggle-button">
         <span :class="[language === 'zh' ? 'active' : '']" @click="changLanguage('zh')">中</span>
         <span class="line"></span>
@@ -71,6 +75,7 @@ import { useHeader } from '@/store/useHeader';
 import { useLanguage } from '@/store/useLanguage';
 import { getLanguage } from '@/language/index';
 import routeController from '@/controller/router';
+import { useRouter } from 'vue-router';
 
 const header = getLanguage().header;
 const { language } = storeToRefs(useLanguage());
@@ -78,6 +83,7 @@ const { navIndex } = storeToRefs(useHeader());
 const { setLanguage } = useLanguage();
 const { setNavIndex } = useHeader();
 const { changePage } = routeController();
+const router = useRouter();
 
 const navList = [
   // {
@@ -138,6 +144,10 @@ const getIcon = itemValue => {
 const goStatistics = () => {
   setNavIndex(-1);
   changePage('/statistics');
+};
+
+const goToUser = () => {
+  router.push('/user');
 };
 </script>
 <style lang="scss" scoped>

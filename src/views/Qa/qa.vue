@@ -11,6 +11,9 @@
             <a-button type="primary" size="small" @click="showAnswerDialog(question)">
               回答
             </a-button>
+            <a-button v-if="isAdmin" size="small" @click="toggleQuestionStatus(question)">
+              {{ question.solved ? '标记为未解决' : '标记为已解决' }}
+            </a-button>
           </div>
         </div>
 
@@ -22,14 +25,14 @@
               <span class="time">{{ formatDate(answer.createTime) }}</span>
             </div>
             <div class="answer-content">{{ answer.content }}</div>
+            <div v-if="answer.username === currentUser" class="answer-status">
+              <span :class="getStatusClass(answer.status)">
+                {{ getStatusText(answer.status) }}
+              </span>
+            </div>
             <div v-if="isAdmin" class="admin-actions">
-              <a-button
-                :type="answer.status === 'approved' ? 'primary' : 'default'"
-                size="small"
-                @click="handleAudit(answer, question.id)"
-              >
-                {{ answer.status === 'approved' ? '已通过' : '待审核' }}
-              </a-button>
+              <a-button size="small" @click="approveAnswer(answer)"> 通过 </a-button>
+              <a-button size="small" @click="rejectAnswer(answer)"> 不通过 </a-button>
             </div>
           </div>
         </div>
@@ -60,7 +63,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
-import type { Question, Answer } from './types';
+import type { Question } from './types';
 import { useQaStore } from '@/store/qa';
 import { storeToRefs } from 'pinia';
 import moment from 'moment';
@@ -70,9 +73,10 @@ const { questions } = storeToRefs(qaStore);
 const answerDialogVisible = ref(false);
 const currentQuestion = ref<Question | null>(null);
 const newAnswer = ref('');
-const isAdmin = ref(true); // 假设当前用户是管理员
+const isAdmin = ref(false); // 假设从某处获取用户角色信息
 const loading = ref(false);
 const noMoreQuestions = ref(false);
+const currentUser = '当前用户'; // 假设从某处获取当前用户名
 
 onMounted(async () => {
   qaStore.initTestData(); // 调用初始化测试数据的方法
@@ -115,17 +119,14 @@ const submitAnswer = async () => {
   }
 };
 
-const handleAudit = async (answer: Answer, questionId: number) => {
-  try {
-    await qaStore.auditAnswer({
-      answerId: answer.id,
-      questionId,
-      status: answer.status === 'approved' ? 'pending' : 'approved',
-    });
-    message.success('审核状态更新成功');
-  } catch (error) {
-    message.error('操作失败，请重试');
-  }
+const approveAnswer = answer => {
+  answer.status = 'approved';
+  // 这里可以添加 API 调用以更新后端状态
+};
+
+const rejectAnswer = answer => {
+  answer.status = 'rejected';
+  // 这里可以添加 API 调用以更新后端状态
 };
 
 const formatDate = (date: string) => {
@@ -148,6 +149,33 @@ const handleScroll = async (event: Event) => {
         loading.value = false;
       }
     }
+  }
+};
+
+const toggleQuestionStatus = question => {
+  question.solved = !question.solved;
+  // 这里可以添加 API 调用以更新后端状态
+};
+
+const getStatusClass = status => {
+  switch (status) {
+    case 'approved':
+      return 'status-approved';
+    case 'rejected':
+      return 'status-rejected';
+    default:
+      return 'status-pending';
+  }
+};
+
+const getStatusText = status => {
+  switch (status) {
+    case 'approved':
+      return '✔ 审核通过';
+    case 'rejected':
+      return '✘ 审核不通过';
+    default:
+      return '⏳ 待审核';
   }
 };
 </script>
@@ -252,5 +280,15 @@ const handleScroll = async (event: Event) => {
   text-align: center;
   color: #888;
   margin-top: 10px;
+}
+
+.status-approved {
+  color: green;
+}
+.status-rejected {
+  color: red;
+}
+.status-pending {
+  color: gray;
 }
 </style>

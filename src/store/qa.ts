@@ -1,22 +1,22 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { Question, SubmitAnswerParams, AuditAnswerParams } from '@/views/Qa/types';
+import type { Question, Answer } from '@/views/Qa/types';
 
 export const useQaStore = defineStore('qa', () => {
   const questions = ref<Question[]>([]);
-  const allQuestions = ref<Question[]>([]); // 存储所有问题
+  const allQuestions = ref<Question[]>([]);
   const page = ref(1);
   const pageSize = 10;
 
   const fetchQuestions = async () => {
-    // 模拟从数据库获取问题列表
-    allQuestions.value = Array.from({ length: 100 }, (_, i) => ({
+    allQuestions.value = Array.from({ length: 20 }, (_, i) => ({
       id: i + 1,
       title: `问题 ${i + 1}: 这是一个示例问题标题`,
       expanded: false,
+      solved: false,
       answers: [],
     }));
-    questions.value = allQuestions.value.slice(0, pageSize); // 初始加载10个问题
+    questions.value = allQuestions.value.slice(0, pageSize);
   };
 
   const loadMoreQuestions = async () => {
@@ -28,52 +28,45 @@ export const useQaStore = defineStore('qa', () => {
   };
 
   const fetchAnswers = async (questionId: number) => {
-    // 模拟获取回答列表
-    const answers = [
+    const answers: Answer[] = [
       {
         id: 101,
-        username: '用户A',
-        content: 'Composition API 主要通过 setup 函数来使用，可以更好地组织代码逻辑...',
+        questionId,
+        username: '当前用户',
+        content: '这是当前用户的回答，待审核...',
         status: 'pending',
         createTime: new Date().toISOString(),
       },
       {
         id: 102,
-        username: '用户B',
-        content: '建议先了解 ref、reactive 等基础概念，然后逐步学习更高级的特性...',
+        questionId,
+        username: '当前用户',
+        content: '这是当前用户的回答，已通过审核。',
         status: 'approved',
         createTime: new Date().toISOString(),
       },
       {
         id: 103,
-        username: '用户C',
-        content: 'TypeScript 可以帮助我们在 Vue 中更好地进行类型检查和代码提示...',
-        status: 'approved',
+        questionId,
+        username: '当前用户',
+        content: '这是当前用户的回答，未通过审核。',
+        status: 'rejected',
         createTime: new Date().toISOString(),
       },
       {
         id: 104,
-        username: '用户D',
-        content: 'Vue Router 是 Vue.js 的官方路由管理器，提供了多种路由配置方式...',
-        status: 'pending',
+        questionId,
+        username: '其他用户',
+        content: '这是其他用户的回答。',
+        status: 'approved',
         createTime: new Date().toISOString(),
       },
     ];
 
     const question = questions.value.find(q => q.id === questionId);
     if (question) {
-      question.answers = answers.filter(answer => answer.id % questionId === 0); // 简单的过滤逻辑
+      question.answers = answers;
     }
-  };
-
-  const submitAnswer = async (params: SubmitAnswerParams) => {
-    // 模拟提交回答
-    console.log('提交回答:', params);
-  };
-
-  const auditAnswer = async (params: AuditAnswerParams) => {
-    // 模拟审核回答
-    console.log('审核回答:', params);
   };
 
   const initTestData = () => {
@@ -85,8 +78,6 @@ export const useQaStore = defineStore('qa', () => {
     fetchQuestions,
     loadMoreQuestions,
     fetchAnswers,
-    submitAnswer,
-    auditAnswer,
     initTestData,
   };
 });
