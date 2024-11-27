@@ -88,10 +88,10 @@ const navList = [
     name: getLanguage().header.knowledge,
     value: 0,
   },
-  // {
-  //   name: 'Bots',
-  //   value: 1,
-  // },
+  {
+    name: 'Bots',
+    value: 1,
+  },
 ];
 
 const changLanguage = (lang: string) => {
