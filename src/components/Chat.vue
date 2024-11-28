@@ -218,7 +218,8 @@ import { useChatSource } from '@/store/useChatSource';
 import { Typewriter } from '@/utils/typewriter';
 import DefaultModal from './DefaultModal.vue';
 import html2canvas from 'html2canvas';
-import urlResquest, { userId } from '@/services/urlConfig';
+// import urlResquest, { userId } from '@/services/urlConfig';
+import urlResquest from '@/services/urlConfig';
 import { getLanguage } from '@/language';
 import { useLanguage } from '@/store/useLanguage';
 import { ChatInfoClass, resultControl } from '@/utils/utils';
@@ -252,13 +253,13 @@ declare module _czc {
 const question = ref('');
 
 //问答的上下文
-const history = computed(() => {
-  const context = chatSettingFormActive.value.context;
-  if (context === 0) return [];
-  const usefulChat = QA_List.value.filter(item => item.type === 'ai');
-  const historyChat = context === 11 ? usefulChat : usefulChat.slice(-context);
-  return historyChat.map(item => [item.question, item.answer]);
-});
+// const history = computed(() => {
+//   const context = chatSettingFormActive.value.context;
+//   if (context === 0) return [];
+//   const usefulChat = QA_List.value.filter(item => item.type === 'ai');
+//   const historyChat = context === 11 ? usefulChat : usefulChat.slice(-context);
+//   return historyChat.map(item => [item.question, item.answer]);
+// });
 
 //当前是否回答中
 const showLoading = ref(false);
@@ -499,24 +500,7 @@ const send = async () => {
   ctrl = new AbortController();
 
   const sendData = {
-    kb_ids: selectList.value,
-    history: history.value,
-    question: q,
-    streaming: chatSettingFormActive.value.capabilities.onlySearch === false,
-    networking: chatSettingFormActive.value.capabilities.networkSearch,
-    product_source: 'saas',
-    rerank: chatSettingFormActive.value.capabilities.rerank,
-    only_need_search_results: chatSettingFormActive.value.capabilities.onlySearch,
-    hybrid_search: chatSettingFormActive.value.capabilities.mixedSearch,
-    max_token: chatSettingFormActive.value.maxToken,
-    api_base: chatSettingFormActive.value.apiBase,
-    api_key: chatSettingFormActive.value.apiKey,
-    model: chatSettingFormActive.value.apiModelName,
-    api_context_length: chatSettingFormActive.value.apiContextLength,
-    chunk_size: chatSettingFormActive.value.chunkSize,
-    top_p: chatSettingFormActive.value.top_P,
-    top_k: chatSettingFormActive.value.top_K,
-    temperature: chatSettingFormActive.value.temperature,
+    content: q,
   };
 
   // 如果是仅检索
@@ -548,16 +532,15 @@ const send = async () => {
       scrollBottom();
     });
   } else {
-    fetchEventSource(apiBase + '/local_doc_qa/local_doc_chat', {
+    fetchEventSource(apiBase + '/stream/RAGFileChatStreamNoauth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: ['text/event-stream', 'application/json'],
       },
-      openWhenHidden: true,
+      //openWhenHidden: true,
       body: JSON.stringify({
-        user_id: userId,
-        ...sendData,
+        content: q,
       }),
       signal: ctrl.signal,
       onopen(e: any) {
