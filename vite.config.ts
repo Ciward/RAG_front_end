@@ -1,6 +1,5 @@
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import eslintPlugin from 'vite-plugin-eslint';
 import path from 'path';
 import fs from 'fs';
 //按需加载antdvue
@@ -69,7 +68,6 @@ export default defineConfig(({ mode }) => {
         },
       }),
       vue(),
-      eslintPlugin(),
       createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹
         iconDirs: [path.resolve(process.cwd(), 'src/assets/svg')],
@@ -126,7 +124,9 @@ export default defineConfig(({ mode }) => {
         //   target: env.VITE_APP_API_HOST,
         //   changeOrigin: true,
         //   secure: false,
+        //   rewrite: (path) => path.replace(/^\/api/, '')
         // },
+        
         '/local_doc_qa': {
           target: 'http://10.102.33.130:8777/api',
           changeOrigin: true,
@@ -136,3 +136,4 @@ export default defineConfig(({ mode }) => {
     },
   };
 });
+
