@@ -8,22 +8,53 @@
  */
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { routes } from './routes';
-// import { useUser } from '@/store/useUser';
-// 导入进度条
 import { start, close } from '@/utils/nporgress';
-
-//是否隐藏NavBar
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes,
+  routes: [
+    ...routes,
+    {
+      path: '/',
+      redirect: '/admin'
+    },
+    {
+      path: '/admin',
+      name: 'Hi',
+      component: () => import('@/views/Hi.vue')
+    },
+    {
+      path: '/home',
+      name: 'Home',
+      component: () => import('@/views/Home.vue'),
+      meta: {
+        requireAuth: true
+      }
+    }
+  ]
 });
+
 router.beforeEach((to, from, next) => {
   start();
-  next();
+  
+  // 检查是否需要认证
+  if (to.meta.requireAuth) {
+    const admin = window.sessionStorage.getItem('admin');
+    if (admin) {
+      next();
+    } else {
+      next({
+        path: '/admin',
+        query: { redirect: to.fullPath }
+      });
+    }
+  } else {
+    next();
+  }
 });
 
 router.afterEach(() => {
   close();
 });
+
 export default router;
