@@ -14,8 +14,10 @@ import pinia from './store/index';
 import '@/styles/common/global.scss';
 import 'virtual:svg-icons-register';
 import SvgIcon from '@/components/SvgIcon.vue';
+import ElementUI from 'element-plus';
+import 'element-plus/dist/index.css'; // 引入全局样式
 
 const vueApp = createApp(App);
-vueApp.use(pinia).use(router);
+vueApp.use(pinia).use(router).use(ElementUI);
 vueApp.component('SvgIcon', SvgIcon);
 vueApp.mount('#app');
