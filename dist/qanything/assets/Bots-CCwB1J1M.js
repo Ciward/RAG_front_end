@@ -1,1 +1,0 @@
-import{j as o,r as t,o as s,B as a,b as _,_ as n}from"./index-DcxLPFQQ.js";const r={class:"page"},c=o({__name:"Bots",setup(p){return(m,d)=>{const e=t("router-view");return s(),a("div",r,[_(e)])}}}),l=n(c,[["__scopeId","data-v-125a7a08"]]);export{l as default};

@@ -38,7 +38,7 @@
               style="margin-bottom: -8px; margin-left: 15px"
               :src="verifyCode"
               title="点击切换验证码"
-              @click="getMailVerifyCode"
+              @click="getVerifyCode"
             />
           </el-form-item>
           <!--          <el-checkbox v-model="checked" class="loginRemember"></el-checkbox><span> 记住我一周</span>-->
@@ -105,6 +105,9 @@
 
 <script>
 import { getRequest } from '@/utils/api.js';
+import { postRequest, postKeyValueRequest } from '@/utils/api.js';
+import { useUserStore } from '@/store/userStore';
+
 export default {
   name: 'Login',
   data() {
@@ -190,22 +193,22 @@ export default {
   },
   methods: {
     submitLogin() {
+      const userStore = useUserStore();
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.fullscreenLoading = true;
-          this.postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
+          postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
             setTimeout(() => {
               this.fullscreenLoading = false;
             }, 1000);
             if (resp) {
-              //保存当前用户到vuex
-              this.$store.state.currentUser = resp.obj;
-              //保存登录用户到sessionStorage中
+              console.log(resp);
+              userStore.setCurrentUser(resp.obj);
               window.sessionStorage.setItem('user', JSON.stringify(resp.obj));
               let path = this.$route.query.redirect;
-              this.$router.replace(path == '/' || path == undefined ? '/chatroom' : path);
+              this.$router.replace(path == '/' || path == undefined ? '/Home' : path);
             } else {
-              this.changeverifyCode();
+              this.getVerifyCode();
             }
           });
         } else {
@@ -252,7 +255,7 @@ export default {
     submitRegisterForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.postRequest('/user/register', this.registerForm).then(resp => {
+          postRequest('/user/register', this.registerForm).then(resp => {
             if (resp) {
               this.registerDialogVisible = false;
               location.reload(); //刷新页面，清空注册界面的上传组件中的图片
@@ -265,11 +268,11 @@ export default {
         }
       });
     },
-    getMailVerifyCode() {
-      getRequest('/verifyCode').then(resp => {
+    getVerifyCode() {
+      this.verifyCode = '/verifyCode?time=' + new Date().getTime();
+      getRequest(this.verifyCode).then(resp => {
         if (resp) {
           this.getCodeEnable = true;
-          //30s内不得再次发送
           let i = 30;
           let id = setInterval(() => {
             this.getCodeBtnText = i-- + 's内不能发送';
