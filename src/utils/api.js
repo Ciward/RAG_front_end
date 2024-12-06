@@ -42,7 +42,9 @@ axios.interceptors.response.use(
   }
 );
 
-let base = import.meta.env.VITE_APP_MODE === 'dev' ? '' : import.meta.env.VITE_APP_API_HOST;
+let base = '';
+
+import.meta.env.VITE_APP_MODE === 'dev' ? '' : import.meta.env.VITE_APP_API_HOST;
 
 /*
 登录请求方法，与服务端Spring Security的登录接口对接
@@ -95,6 +97,7 @@ export const putRequest = (url, params) => {
 封装“查询”请求方法——get
  */
 export const getRequest = (url, params) => {
+  console.log(`${url}`);
   return axios({
     method: 'get',
     url: `${base}${url}`,

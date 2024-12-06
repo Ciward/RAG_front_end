@@ -10,6 +10,11 @@ import { RouteRecordRaw } from 'vue-router';
 
 export const routes: RouteRecordRaw[] = [
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/Hi.vue'),
+  },
+  {
     path: '/',
     name: 'home',
     component: () => import('@/layout/index.vue'),
