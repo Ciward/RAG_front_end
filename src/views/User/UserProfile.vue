@@ -4,12 +4,15 @@
       <img :src="userInfo.userProfile || defaultAvatar" alt="用户头像" class="avatar" />
     </div>
     <div class="info-section">
-      <h2>{{ userInfo.name }}</h2>
+      <h2>{{ userInfo.nickname }}</h2>
+      <p>用户名: {{ userInfo.username }}</p>
+      <p>姓名: {{ userInfo.name }}</p>
       <p>学号: {{ userInfo.studentId }}</p>
       <p>角色: {{ userInfo.role }}</p>
       <p>性别: {{ userInfo.gender }}</p>
       <p>民族: {{ userInfo.nation }}</p>
       <p>生源地: {{ userInfo.hometown }}</p>
+      <p>账号状态: {{ userInfo.enabled ? '正常' : '禁用' }}</p>
     </div>
     <div class="email-icon" @click="handleEmailClick">
       <img :src="emailIcon" alt="邮箱图标" />
@@ -19,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useUser } from '@/store/useUser';
 import { storeToRefs } from 'pinia';
 
@@ -35,9 +38,18 @@ const handleEmailClick = () => {
   console.log('邮箱图标被点击');
 };
 
-// 用于调试
-console.log('Current userInfo:', userInfo.value);
-
+onMounted(() => {
+  // 在组件挂载时检查用户信息
+  console.log('Mounted userInfo:', userInfo.value);
+  
+  // 如果 store 中没有用户信息，尝试从 sessionStorage 获取
+  if (!userInfo.value.token) {
+    const storedUser = window.sessionStorage.getItem('user');
+    if (storedUser) {
+      userStore.setUserInfo(JSON.parse(storedUser));
+    }
+  }
+});
 </script>
 
 <style scoped>

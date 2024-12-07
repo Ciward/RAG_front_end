@@ -10,20 +10,26 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-// 定义用户信息接口
+// 修改接口定义以匹配后端返回的数据结构
 interface UserInfo {
   token: string;
+  id?: number;
   role?: string;
   username?: string;
+  nickname?: string;
+  password?: string | null;
   userProfile?: string;
-  userStateId?: string;
-  isEnabled?: boolean;
-  isLocked?: boolean;
+  userStateId?: number;
   gender?: string;
   name?: string;
   studentId?: string;
   nation?: string;
   hometown?: string;
+  enabled?: boolean;
+  authorities?: any | null;
+  accountNonExpired?: boolean;
+  accountNonLocked?: boolean;
+  credentialsNonExpired?: boolean;
 }
 
 export const useUser = defineStore(
@@ -33,8 +39,28 @@ export const useUser = defineStore(
       token: '',
     });
 
-    const setUserInfo = (info: UserInfo) => {
-      userInfo.value = info;
+    const setUserInfo = (info: any) => {
+      userInfo.value = {
+        token: info.token,
+        id: info.id,
+        role: info.role,
+        username: info.username,
+        nickname: info.nickname,
+        password: info.password,
+        userProfile: info.userProfile,
+        userStateId: info.userStateId,
+        gender: info.gender,
+        name: info.name,
+        studentId: info.studentId,
+        nation: info.nation,
+        hometown: info.hometown,
+        enabled: info.enabled,
+        authorities: info.authorities,
+        accountNonExpired: info.accountNonExpired,
+        accountNonLocked: info.accountNonLocked,
+        credentialsNonExpired: info.credentialsNonExpired
+      };
+      console.log('Store updated userInfo:', userInfo.value);
     };
 
     return {
@@ -48,6 +74,3 @@ export const useUser = defineStore(
     },
   }
 );
-
-console.log('Login response:', resp.obj);  // 检查服务器返回的数据
-console.log('Stored userInfo:', userInfo.value);  // 检查存储的用户信息

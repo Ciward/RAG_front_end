@@ -199,22 +199,12 @@ export default {
               this.fullscreenLoading = false;
             }, 1000);
             if (resp) {
-              userStore.setUserInfo({
-                token: resp.obj.token,
-                role: resp.obj.role,
-                username: resp.obj.username,
-                userProfile: resp.obj.user_profile,
-                userStateId: resp.obj.user_state_id,
-                isEnabled: resp.obj.is_enabled,
-                isLocked: resp.obj.is_locked,
-                gender: resp.obj.gender,
-                name: resp.obj.name,
-                studentId: resp.obj.student_id,
-                nation: resp.obj.nation,
-                hometown: resp.obj.hometown,
-              });
-
+              userStore.setUserInfo(resp.obj);
+              
               window.sessionStorage.setItem('user', JSON.stringify(resp.obj));
+              
+              console.log('Login response:', resp.obj);
+              
               let path = this.$route.query.redirect;
               this.$router.replace(path == '/' || path == undefined ? '/home' : path);
             } else {
