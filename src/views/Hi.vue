@@ -7,8 +7,9 @@
     <!--    </el-header>-->
     <el-main>
       <div class="loginContainer">
-        <el-form ref="loginForm" :rules="rules" :model="loginForm" label-width="80px">
-          <h3 class="loginTitle">大学生学业信息智能问答系统</h3>
+        <h2 class="loginTitle">"赛博辅导员"智能问答系统</h2>
+        <el-form ref="loginForm" :rules="rules" :model="loginForm" label-width="80px" v-if="!registerDialogVisible">
+          <h3 class="loginTitle">用户登录</h3>
           <el-form-item label="用户名:" prop="username">
             <el-input
               v-model="loginForm.username"
@@ -55,58 +56,53 @@
             >
           </div>
         </el-form>
+        <el-form ref="registerForm" :model="registerForm" status-icon :rules="registerRules" v-if="registerDialogVisible">
+          <h3 class="loginTitle">新用户注册</h3>
+          <el-form-item label="用户昵称：" :label-width="formLabelWidth" prop="nickname">
+            <el-input v-model="registerForm.nickname" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="登录用户名：" :label-width="formLabelWidth" prop="username">
+            <el-input v-model="registerForm.username" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="密码：" :label-width="formLabelWidth" prop="password">
+            <el-input v-model="registerForm.password" type="password" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码：" :label-width="formLabelWidth" prop="checkPass">
+            <el-input v-model="registerForm.checkPass" type="password" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="用户头像：" :label-width="formLabelWidth">
+            <el-upload
+              ref="upload"
+              action="/ossFileUpload?module=group-chat"
+              list-type="picture-card"
+              :class="{ disabled: uploadDisabled }"
+              :before-upload="beforeAvatarUpload"
+              :file-list="fileList"
+              :on-progress="onProgress"
+              :on-success="imgSuccess"
+              :on-error="imgError"
+              :on-remove="imgRemove"
+            >
+              <i class="el-icon-plus"></i>
+              <div slot="tip" class="el-upload__tip">只能上传不超过4MB的图片(可使用默认头像！)</div>
+            </el-upload>
+          </el-form-item>
+          <div slot="footer" class="dialog-footer">
+            <el-button style="width: 45%; margin-right: 15px" @click="closeRegisterDialog">直接登录</el-button>
+            <el-button type="primary" style="width: 45%" @click="submitRegisterForm('registerForm')"
+              >注册</el-button
+            >
+          </div>
+      </el-form>
       </div>
     </el-main>
-    <el-dialog
-      v-model:visible="registerDialogVisible"
-      title="新用户注册"
-      :before-close="closeRegisterDialog"
-      width="30%"
-    >
-      <el-form ref="registerForm" :model="registerForm" status-icon :rules="registerRules">
-        <el-form-item label="用户昵称：" :label-width="formLabelWidth" prop="nickname">
-          <el-input v-model="registerForm.nickname" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="登录用户名：" :label-width="formLabelWidth" prop="username">
-          <el-input v-model="registerForm.username" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="密码：" :label-width="formLabelWidth" prop="password">
-          <el-input v-model="registerForm.password" type="password" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码：" :label-width="formLabelWidth" prop="checkPass">
-          <el-input v-model="registerForm.checkPass" type="password" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="用户头像：" :label-width="formLabelWidth">
-          <el-upload
-            ref="upload"
-            action="/ossFileUpload?module=group-chat"
-            list-type="picture-card"
-            :class="{ disabled: uploadDisabled }"
-            :before-upload="beforeAvatarUpload"
-            :file-list="fileList"
-            :on-progress="onProgress"
-            :on-success="imgSuccess"
-            :on-error="imgError"
-            :on-remove="imgRemove"
-          >
-            <i class="el-icon-plus"></i>
-            <div slot="tip" class="el-upload__tip">只能上传不超过4MB的图片(可使用默认头像！)</div>
-          </el-upload>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" style="width: 100%" @click="submitRegisterForm('registerForm')"
-          >注册</el-button
-        >
-      </div>
-    </el-dialog>
   </el-container>
 </template>
 
 <script>
 import { getRequest } from '@/utils/api.js';
 import { postRequest, postKeyValueRequest } from '@/utils/api.js';
-import { useUserStore } from '@/store/userStore';
+import { useUserStore } from '@/store/useUserStore';
 
 export default {
   name: 'Login',
@@ -202,8 +198,8 @@ export default {
               this.fullscreenLoading = false;
             }, 1000);
             if (resp) {
-              console.log(resp);
               userStore.setCurrentUser(resp.obj);
+
               window.sessionStorage.setItem('user', JSON.stringify(resp.obj));
               let path = this.$route.query.redirect;
               this.$router.replace(path == '/' || path == undefined ? '/Home' : path);
@@ -224,7 +220,7 @@ export default {
       this.$router.replace('/adminlogin');
     },
     showRegistryDialog() {
-      this.registerDialogVisible = true;
+      this.registerDialogVisible = true;  // 确保这个值被正确设置为 true
     },
     /**
      *       图片上传的方法
@@ -239,31 +235,24 @@ export default {
       return isLt4M;
     },
 
-    closeRegisterDialog(done) {
-      this.registerForm = {
-        //清空表单
-        nickname: '',
-        username: '',
-        password: '',
-        checkPass: '',
-        userProfile: '',
-      };
-      //this.$refs.upload.clearFiles();//清除上传组件的图片
-      done(); //关闭对话框
+    closeRegisterDialog() {
+      this.registerDialogVisible = false;
+      this.$refs.registerForm.resetFields();
+      this.fileList = [];
     },
-    //提交注册操作
     submitRegisterForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           postRequest('/user/register', this.registerForm).then(resp => {
             if (resp) {
+              this.$message.success('注册成功，请登录');
               this.registerDialogVisible = false;
-              location.reload(); //刷新页面，清空注册界面的上传组件中的图片
+              this.$refs.registerForm.resetFields();
+              this.fileList = [];
             }
           });
         } else {
           this.$message.error('请正确填写信息！');
-          console.log('error submit!!');
           return false;
         }
       });
@@ -284,6 +273,25 @@ export default {
           }, 30000);
         }
       });
+    },
+    // 上传中
+    onProgress(event, file, fileList){
+      this.uploadDisabled = true;
+    },
+    // 图片上传成功
+    imgSuccess(response, file, fileList) {
+      this.uploadDisabled = true;
+      this.registerForm.userProfile = response; // 将返回的路径给表单的头像属性
+      console.log('图片url为：' + this.registerForm.userProfile);
+    },
+    // 图片上传失败
+    imgError(err, file, fileList) {
+      this.$message.error('上传失败');
+      this.uploadDisabled = false;
+    },
+    //移除图片
+    imgRemove(file,fileList){
+      this.uploadDisabled = false;
     },
   },
 };

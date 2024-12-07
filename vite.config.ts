@@ -126,20 +126,20 @@ export default defineConfig(({ mode }) => {
           secure: false,
         },
         ['/verifyCode']: {
-          target: 'http://127.0.0.1:8082',
+          target: env.VITE_APP_API_HOST,
           changeOrigin: true,
           secure: false,
         },
         ['/doLogin']: {
-          target: 'http://127.0.0.1:8082',
+          target: env.VITE_APP_API_HOST,
           changeOrigin: true,
           secure: false,
         },
-        // '/local_doc_qa': {
-        //   target: 'http://10.102.33.130:8777/api',
-        //   changeOrigin: true,
-        //   rewrite: path => path.replace(/^\/local_doc_qa/, '/local_doc_qa'),
-        // },
+        '/local_doc_qa': {
+          target: 'http://10.102.33.130:8777/api',
+          changeOrigin: true,
+          rewrite: path => path.replace(/^\/local_doc_qa/, '/local_doc_qa'),
+        },
       },
     },
   };

@@ -8,5 +8,8 @@ export const useUserStore = defineStore('user', {
     setCurrentUser(user) {
       this.currentUser = user;
     },
+    getCurrentUser() {
+      return this.currentUser;
+    },
   },
 });

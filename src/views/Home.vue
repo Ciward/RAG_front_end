@@ -21,7 +21,7 @@
 import { pageStatus } from '@/utils/enum';
 import DefaultPage from '@/components/Defaultpage.vue';
 import { useKnowledgeBase } from '@/store/useKnowledgeBase';
-import { useUserStore } from '@/store/userStore';
+import { useUserStore } from '@/store/useUserStore';
 import Chat from '@/components/Chat.vue';
 import OptionList from '@/components/OptionList.vue';
 
@@ -30,7 +30,7 @@ const { showDefault } = storeToRefs(useKnowledgeBase());
 const { setDefault, getList } = useKnowledgeBase();
 
 const userStore = useUserStore();
-console.log(userStore.currentUser);
+console.log(userStore.getCurrentUser());
 //开始回答后执行的操作
 //1.展示聊天界面
 //2.默认知识库显示出来

@@ -39,13 +39,14 @@ router.beforeEach((to, from, next) => {
   
   // 检查是否需要认证
   if (to.meta.requireAuth) {
-    const admin = window.sessionStorage.getItem('admin');
+    const admin = window.sessionStorage.getItem('user');
     if (admin) {
       next();
     } else {
       next({
         path: '/login',
-        query: { redirect: to.fullPath }
+        query: { redirect: to.fullPath },
+        replace: true
       });
     }
   } else {

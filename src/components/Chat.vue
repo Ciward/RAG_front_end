@@ -473,10 +473,10 @@ const send = async () => {
     message.warn('正在聊天中...请等待结束');
     return;
   }
-  if (!(await checkChatSetting())) {
-    message.error('模型设置错误，请先检查模型配置');
-    return;
-  }
+  // if (!(await checkChatSetting())) {
+  //   message.error('模型设置错误，请先检查模型配置');
+  //   return;
+  // }
   checkKbSelect();
   if (!selectList.value.length) {
     return message.warning(common.chooseError);
@@ -532,7 +532,7 @@ const send = async () => {
       scrollBottom();
     });
   } else {
-    fetchEventSource(apiBase + '/stream/RAGFileChatStreamNoauth', {
+    fetchEventSource(apiBase + '/stream/RAGFileChatStream', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
