@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
   start();
   
   // 检查是否需要认证
-  if (to.meta.requireAuth) {
+  if (to.meta.requiresAuth) {
     const admin = window.sessionStorage.getItem('user');
     if (admin) {
       next();

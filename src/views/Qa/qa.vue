@@ -220,7 +220,7 @@ const getStatusText = status => {
   gap: 8px;
 
   a-button {
-    background-color: #5a47e5; // 修改按钮背景颜色
+    background-color: #8a66f4; // 修改按钮背景颜色
     color: #fff; // 修改按钮字体颜色
   }
 }

@@ -22,6 +22,7 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('@/views/Home.vue'),
         meta: {
           title: '首页',
+          requiresAuth: true,
         },
       },
       {
@@ -69,16 +70,25 @@ export const routes: RouteRecordRaw[] = [
         path: '/quickstart',
         name: 'quickstart',
         component: () => import('@/views/QuickStart/index.vue'),
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
         path: '/qa',
         name: 'qa',
         component: () => import('@/views/Qa/qa.vue'),
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
         path: '/user',
         name: 'user',
         component: () => import('@/views/User/user.vue'),
+        meta: {
+          requiresAuth: true,
+        },
       },
     ],
   },

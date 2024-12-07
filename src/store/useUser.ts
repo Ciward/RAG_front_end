@@ -7,14 +7,33 @@
  * @Description:
  */
 
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+
+// 定义用户信息接口
+interface UserInfo {
+  token: string;
+  role?: string;
+  username?: string;
+  userProfile?: string;
+  userStateId?: string;
+  isEnabled?: boolean;
+  isLocked?: boolean;
+  gender?: string;
+  name?: string;
+  studentId?: string;
+  nation?: string;
+  hometown?: string;
+}
+
 export const useUser = defineStore(
   'user',
   () => {
-    const userInfo = ref({
+    const userInfo = ref<UserInfo>({
       token: '',
     });
 
-    const setUserInfo = info => {
+    const setUserInfo = (info: UserInfo) => {
       userInfo.value = info;
     };
 
@@ -29,3 +48,6 @@ export const useUser = defineStore(
     },
   }
 );
+
+console.log('Login response:', resp.obj);  // 检查服务器返回的数据
+console.log('Stored userInfo:', userInfo.value);  // 检查存储的用户信息

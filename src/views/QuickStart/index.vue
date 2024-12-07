@@ -980,7 +980,7 @@ $avatar-width: 96px;
       }
 
       .filename-active {
-        color: #5a47e5;
+        color: #8a66f4;
         text-decoration: underline;
         cursor: pointer;
       }
@@ -993,7 +993,7 @@ $avatar-width: 96px;
       }
 
       a {
-        color: #5a47e5;
+        color: #8a66f4;
         text-decoration: underline;
         cursor: pointer;
       }
@@ -1009,7 +1009,7 @@ $avatar-width: 96px;
         cursor: pointer;
         align-items: center;
         margin-right: auto;
-        color: #5a47e5;
+        color: #8a66f4;
 
         .reload-text {
           height: 22px;
@@ -1092,7 +1092,7 @@ $avatar-width: 96px;
       &:hover,
       &:focus,
       &:active {
-        border-color: #5a47e5 !important;
+        border-color: #8a66f4 !important;
         box-shadow: none !important;
       }
     }
@@ -1169,9 +1169,9 @@ $avatar-width: 96px;
         color: #666666;
 
         &:hover {
-          //border: 1px solid #5a47e5;
+          //border: 1px solid #8a66f4;
           background-color: #e5e5e5;
-          color: #5a47e5;
+          color: #8a66f4;
         }
 
         svg {

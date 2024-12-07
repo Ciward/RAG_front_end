@@ -1,11 +1,15 @@
 <template>
   <div class="user-profile-card">
     <div class="avatar-section">
-      <img :src="user.avatar || defaultAvatar" alt="用户头像" class="avatar" />
+      <img :src="userInfo.userProfile || defaultAvatar" alt="用户头像" class="avatar" />
     </div>
     <div class="info-section">
-      <h2>{{ user.name }}</h2>
-      <p>学号: {{ user.studentId }}</p>
+      <h2>{{ userInfo.name }}</h2>
+      <p>学号: {{ userInfo.studentId }}</p>
+      <p>角色: {{ userInfo.role }}</p>
+      <p>性别: {{ userInfo.gender }}</p>
+      <p>民族: {{ userInfo.nation }}</p>
+      <p>生源地: {{ userInfo.hometown }}</p>
     </div>
     <div class="email-icon" @click="handleEmailClick">
       <img :src="emailIcon" alt="邮箱图标" />
@@ -16,22 +20,24 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useUser } from '@/store/useUser';
+import { storeToRefs } from 'pinia';
 
-const user = ref({
-  avatar: '', // 用户上传的头像URL
-  name: '张三', // 用户真实姓名
-  studentId: '20210001', // 用户学号
-});
+const userStore = useUser();
+const { userInfo } = storeToRefs(userStore);
 
 // 确保路径正确并且文件存在
 const defaultAvatar = new URL('../../assets/home/avatar.png', import.meta.url).href;
 const emailIcon = new URL('../../assets/home/icon-email.png', import.meta.url).href;
-const hasUnreadEmails = ref(true); // 是否有未读邮件
+const hasUnreadEmails = ref(true);
 
 const handleEmailClick = () => {
-  // 处理邮箱图标点击事件
   console.log('邮箱图标被点击');
 };
+
+// 用于调试
+console.log('Current userInfo:', userInfo.value);
+
 </script>
 
 <style scoped>

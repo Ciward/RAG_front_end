@@ -1,10 +1,10 @@
 <!-- eslint-disable vue/no-deprecated-slot-attribute -->
 <!-- eslint-disable vue/no-deprecated-v-on-native-modifier -->
 <template>
-  <el-container>
-    <!--    <el-header >-->
-    <!--      <el-button @click="gotoAdminLogin" icon="el-icon-d-arrow-right" style="float: right;border: none" >管理端登录</el-button>-->
-    <!--    </el-header>-->
+  <el-container class="login-page">
+    <div class="background-logo">
+      <img src="@/assets/login/logo-small.png" alt="logo" class="background-logo-image"/>
+    </div>
     <el-main>
       <div class="loginContainer">
         <h2 class="loginTitle">"赛博辅导员"智能问答系统</h2>
@@ -40,6 +40,7 @@
               :src="verifyCode"
               title="点击切换验证码"
               @click="getVerifyCode"
+              class="verify-code-img"
             />
           </el-form-item>
           <!--          <el-checkbox v-model="checked" class="loginRemember"></el-checkbox><span> 记住我一周</span>-->
@@ -102,7 +103,7 @@
 <script>
 import { getRequest } from '@/utils/api.js';
 import { postRequest, postKeyValueRequest } from '@/utils/api.js';
-import { useUserStore } from '@/store/useUserStore';
+import { useUser } from '@/store/useUser';
 
 export default {
   name: 'Login',
@@ -189,7 +190,7 @@ export default {
   },
   methods: {
     submitLogin() {
-      const userStore = useUserStore();
+      const userStore = useUser();
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.fullscreenLoading = true;
@@ -198,11 +199,24 @@ export default {
               this.fullscreenLoading = false;
             }, 1000);
             if (resp) {
-              userStore.setCurrentUser(resp.obj);
+              userStore.setUserInfo({
+                token: resp.obj.token,
+                role: resp.obj.role,
+                username: resp.obj.username,
+                userProfile: resp.obj.user_profile,
+                userStateId: resp.obj.user_state_id,
+                isEnabled: resp.obj.is_enabled,
+                isLocked: resp.obj.is_locked,
+                gender: resp.obj.gender,
+                name: resp.obj.name,
+                studentId: resp.obj.student_id,
+                nation: resp.obj.nation,
+                hometown: resp.obj.hometown,
+              });
 
               window.sessionStorage.setItem('user', JSON.stringify(resp.obj));
               let path = this.$route.query.redirect;
-              this.$router.replace(path == '/' || path == undefined ? '/Home' : path);
+              this.$router.replace(path == '/' || path == undefined ? '/home' : path);
             } else {
               this.getVerifyCode();
             }
@@ -282,7 +296,7 @@ export default {
     imgSuccess(response, file, fileList) {
       this.uploadDisabled = true;
       this.registerForm.userProfile = response; // 将返回的路径给表单的头像属性
-      console.log('图片url为：' + this.registerForm.userProfile);
+      console.log('图片url为:' + this.registerForm.userProfile);
     },
     // 图片上传失败
     imgError(err, file, fileList) {
@@ -298,34 +312,81 @@ export default {
 </script>
 
 <style>
-.disabled .el-upload--picture-card {
-  display: none;
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    #4b4e60 0%,
+    #3d4050 25%,
+    #2f3240 50%,
+    #3d4050 75%,
+    #4b4e60 100%
+  );
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+.background-logo {
+  position: relative;
+  top: 30px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.background-logo-image {
+  width: 180px;
+  height: auto;
+  opacity: 0.9;
+}
+
 .loginContainer {
-  width: 350px;
-  margin: 100px auto;
+  width: 450px;
+  margin: 20px auto 50px;
   border-radius: 15px;
   border: 1px solid #eaeaea;
-  /*添加阴影 h-shadow(水平阴影位置)，v-shadow(垂直阴影位置)，blur(阴影大小)，color(颜色)*/
-  box-shadow: 10px 10px 35px #cac6c6;
+  box-shadow: 10px 10px 35px rgba(0, 0, 0, 0.2);
   background: #fff;
-  /*background-clip——规定背景的绘制区域*/
-  /*border-box：背景被裁剪到边框盒*/
-  /*padding-box：背景被裁剪到内边距框*/
-  /*content-box：背景被裁剪到内容框*/
   background-clip: padding-box;
-  padding: 25px 35px 25px 35px;
+  padding: 35px 45px;
 }
+
+.logo-container {
+  display: none;
+}
+
 .loginTitle {
   margin: 10px auto 30px auto;
   text-align: center;
   color: #505458;
+  font-size: 24px;
 }
+
+.el-form-item {
+  margin-bottom: 25px;
+}
+
+.el-input {
+  height: 40px;
+}
+
+.el-button {
+  height: 40px;
+  font-size: 16px;
+}
+
 .loginRemember {
   margin: 5px auto 35px 80px;
 }
-/*.el-form-item__content{*/
-/* display: flex;*/
-/*  align-items: center*/
-/*}*/
+
+.disabled .el-upload--picture-card {
+  display: none;
+}
+
+.verify-code-img {
+  height: 38px;
+  margin-left: 15px;
+  vertical-align: middle;
+}
 </style>
