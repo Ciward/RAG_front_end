@@ -66,7 +66,7 @@ export const useUser = defineStore(
   },
   {
     persist: {
-      storage: localStorage,
+      storage: sessionStorage,
     },
   }
 );

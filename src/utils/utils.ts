@@ -19,12 +19,7 @@ export const checkToken = () => {
   //   valid.value=false;
   //   return false;
   // }
-  return request.get('/checkToken',{
-      headers: {
-          'Content-Type': 'application/json',
-          Authorization: window.sessionStorage.getItem('token'),
-      },
-  });
+  return request.get('/checkToken');
 };
 export function getRandomString(strLen = 5) {
   const strCeils = 'abcdefghijklmnopqrstuvwxyz1234567890';

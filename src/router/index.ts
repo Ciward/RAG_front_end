@@ -9,7 +9,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { routes } from './routes';
 import { start, close } from '@/utils/nporgress';
-
+import { message } from 'ant-design-vue';
 import { checkToken } from '@/utils/utils';
 const router = createRouter({
   history: createWebHashHistory(),
@@ -38,12 +38,30 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   start();
   // 检查是否需要认证
+  if(to.path==='/login'){
+    const user = window.sessionStorage.getItem('user');
+    checkToken().then(resp => {
+      if (user) {
+        message.info('已登录,无需重复登录');
+        next({
+          path: '/home',
+          replace: true
+        });
+      } else {
+        next();
+      }
+    }).catch(err => {
+      next();
+    });
+  }
   if (to.meta.requiresAuth) {
     const user = window.sessionStorage.getItem('user');
     checkToken().then(resp => {
       if (user) {
         next();
       } else {
+        // 显示token已过期
+        message.error('token已过期，请重新登录');
         next({
           path: '/login',
           replace: true
@@ -55,8 +73,6 @@ router.beforeEach((to, from, next) => {
         replace: true
       });
     });
-  } else {
-    next();
   }
 });
 
