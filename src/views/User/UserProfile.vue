@@ -1,24 +1,27 @@
 <template>
-  <div class="user-profile-card">
-    <div class="avatar-section">
-      <img :src="userInfo.userProfile || defaultAvatar" alt="用户头像" class="avatar" />
+  <el-dialog
+    v-model="dialogVisible"
+    title="用户信息"
+    width="500px"
+    :before-close="handleClose"
+  >
+    <div class="user-profile-card">
+      <div class="avatar-section">
+        <img :src="userInfo.userProfile || defaultAvatar" alt="用户头像" class="avatar" />
+      </div>
+      <div class="info-section">
+        <h2>{{ userInfo.nickname }}</h2>
+        <p>用户名: {{ userInfo.username }}</p>
+        <p>姓名: {{ userInfo.name }}</p>
+        <p>学号: {{ userInfo.studentId }}</p>
+        <p>角色: {{ userInfo.role }}</p>
+        <p>性别: {{ userInfo.gender }}</p>
+        <p>民族: {{ userInfo.nation }}</p>
+        <p>生源地: {{ userInfo.hometown }}</p>
+        <p>账号状态: {{ userInfo.enabled ? '正常' : '禁用' }}</p>
+      </div>
     </div>
-    <div class="info-section">
-      <h2>{{ userInfo.nickname }}</h2>
-      <p>用户名: {{ userInfo.username }}</p>
-      <p>姓名: {{ userInfo.name }}</p>
-      <p>学号: {{ userInfo.studentId }}</p>
-      <p>角色: {{ userInfo.role }}</p>
-      <p>性别: {{ userInfo.gender }}</p>
-      <p>民族: {{ userInfo.nation }}</p>
-      <p>生源地: {{ userInfo.hometown }}</p>
-      <p>账号状态: {{ userInfo.enabled ? '正常' : '禁用' }}</p>
-    </div>
-    <div class="email-icon" @click="handleEmailClick">
-      <img :src="emailIcon" alt="邮箱图标" />
-      <span v-if="hasUnreadEmails" class="unread-indicator"></span>
-    </div>
-  </div>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -28,21 +31,23 @@ import { storeToRefs } from 'pinia';
 
 const userStore = useUser();
 const { userInfo } = storeToRefs(userStore);
+const dialogVisible = ref(false);
 
-// 确保路径正确并且文件存在
-const defaultAvatar = new URL('../../assets/home/avatar.png', import.meta.url).href;
-const emailIcon = new URL('../../assets/home/icon-email.png', import.meta.url).href;
-const hasUnreadEmails = ref(true);
+const defaultAvatar = new URL('../../assets/home/icon-user.png', import.meta.url).href;
 
-const handleEmailClick = () => {
-  console.log('邮箱图标被点击');
+const handleClose = () => {
+  dialogVisible.value = false;
 };
 
+const showDialog = () => {
+  dialogVisible.value = true;
+};
+
+defineExpose({
+  showDialog
+});
+
 onMounted(() => {
-  // 在组件挂载时检查用户信息
-  console.log('Mounted userInfo:', userInfo.value);
-  
-  // 如果 store 中没有用户信息，尝试从 sessionStorage 获取
   if (!userInfo.value.token) {
     const storedUser = window.sessionStorage.getItem('user');
     if (storedUser) {
@@ -54,24 +59,12 @@ onMounted(() => {
 
 <style scoped>
 .user-profile-card {
-  display: flex;
-  align-items: center;
   padding: 20px;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  position: relative;
-  transition: box-shadow 0.3s ease;
-  height: 100vh;
-}
-
-.user-profile-card:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .avatar-section {
-  flex-shrink: 0;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .avatar {
@@ -83,41 +76,18 @@ onMounted(() => {
 }
 
 .info-section {
-  margin-left: 20px;
+  text-align: left;
 }
 
 .info-section h2 {
   font-size: 1.5rem;
-  margin: 0;
+  margin: 0 0 20px 0;
   color: #333;
 }
 
 .info-section p {
   font-size: 1rem;
   color: #666;
-  margin-top: 5px;
-}
-
-.email-icon {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.email-icon:hover {
-  transform: scale(1.1);
-}
-
-.unread-indicator {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  width: 12px;
-  height: 12px;
-  background-color: red;
-  border-radius: 50%;
-  border: 2px solid #fff;
+  margin: 10px 0;
 }
 </style>

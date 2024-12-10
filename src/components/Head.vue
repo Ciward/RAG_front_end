@@ -33,8 +33,8 @@
         <img src="../assets/home/icon-home.png" alt="首页" /><span>首页</span>
       </li>-->
       <!-- 用户信息 -->
-      <li @click="goToUser">
-        <img src="../assets/home/icon-user.png" alt="用户信息" />
+      <li @click="showUserProfile">
+        <img src="../assets/home/avatar.png" alt="用户信息" />
         <span></span>
       </li>
       <li class="toggle-button">
@@ -65,6 +65,8 @@
         </div>
       </li>
     </ul>
+    <!-- 添加用户信息��件 -->
+    <UserProfile ref="userProfileRef" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -76,6 +78,8 @@ import { useLanguage } from '@/store/useLanguage';
 import { getLanguage } from '@/language/index';
 import routeController from '@/controller/router';
 import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import UserProfile from '@/views/User/UserProfile.vue';
 
 const header = getLanguage().header;
 const { language } = storeToRefs(useLanguage());
@@ -146,8 +150,10 @@ const goStatistics = () => {
   changePage('/statistics');
 };
 
-const goToUser = () => {
-  router.push('/user');
+const userProfileRef = ref();
+
+const showUserProfile = () => {
+  userProfileRef.value?.showDialog();
 };
 </script>
 <style lang="scss" scoped>
@@ -273,9 +279,16 @@ const goToUser = () => {
       cursor: pointer;
 
       img {
-        width: 16px;
-        height: 16px;
+        width: 32px;
+        height: 32px;
         margin-right: 4px;
+        transition: transform 0.3s ease;
+        border-radius: 50%;
+        object-fit: cover;
+
+        &:hover {
+          transform: scale(1.1);
+        }
       }
     }
 
