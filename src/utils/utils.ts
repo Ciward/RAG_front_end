@@ -10,7 +10,7 @@
 import { useUser } from '@/store/useUser';
 import { IChatSetting, IFileListItem, ITimeInfo, ITokenInfo } from './types';
 import { request } from './request';
-import { token,tokenValid } from '@/store/useToken';
+
 export function addWindowsAttr(name, value) {
   window[name] = value;
 }
@@ -19,18 +19,11 @@ export const checkToken = () => {
   //   valid.value=false;
   //   return false;
   // }
-  request.get('/checkToken',{
+  return request.get('/checkToken',{
       headers: {
           'Content-Type': 'application/json',
-          Authorization: token.value,
+          Authorization: window.sessionStorage.getItem('token'),
       },
-  }).then(resp => {
-      
-      tokenValid.value=true;
-      console.log(token.value);
-  }).catch(err => {
-      console.log(err);
-      tokenValid.value=false;
   });
 };
 export function getRandomString(strLen = 5) {

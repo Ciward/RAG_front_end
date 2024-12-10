@@ -13,7 +13,6 @@
         src="../assets/login/logo-small.png"
         :style="{ marginTop: navIndex === -1 ? '' : '14px' }"
         alt="logo"
-        @click="goDetail('https://ai.youdao.com/')"
       />
     </div>
     <div class="header-navs">

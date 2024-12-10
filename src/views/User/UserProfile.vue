@@ -47,14 +47,14 @@ defineExpose({
   showDialog
 });
 
-onMounted(() => {
-  if (!userInfo.value.token) {
-    const storedUser = window.sessionStorage.getItem('user');
-    if (storedUser) {
-      userStore.setUserInfo(JSON.parse(storedUser));
-    }
-  }
-});
+// onMounted(() => {
+//   if (!userInfo.value.token) {
+//     const storedUser = window.sessionStorage.getItem('user');
+//     if (storedUser) {
+//       userStore.setUserInfo(JSON.parse(storedUser));
+//     }
+//   }
+// });
 </script>
 
 <style scoped>

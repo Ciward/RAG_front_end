@@ -104,7 +104,7 @@
 import { getRequest } from '@/utils/api.js';
 import { postRequest, postKeyValueRequest } from '@/utils/api.js';
 import { useUser } from '@/store/useUser';
-import { token,tokenValid } from '@/store/useToken';
+
 import { checkToken } from '@/utils/utils';
 export default {
   name: 'Login',
@@ -202,8 +202,7 @@ export default {
             if (resp) {
               let user = resp.obj;
               userStore.setUserInfo(user);
-              token.value = resp.token;
-              tokenValid.value = true;
+              window.sessionStorage.setItem('token', resp.token);
               window.sessionStorage.setItem('user', JSON.stringify(user));
 
               console.log('Login response:', resp);

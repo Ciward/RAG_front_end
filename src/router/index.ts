@@ -9,7 +9,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { routes } from './routes';
 import { start, close } from '@/utils/nporgress';
-import { token, tokenValid } from '@/store/useToken';
+
 import { checkToken } from '@/utils/utils';
 const router = createRouter({
   history: createWebHashHistory(),
@@ -17,11 +17,11 @@ const router = createRouter({
     ...routes,
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/home'
     },
     {
       path: '/login',
-      name: 'login',
+      name: 'Login',
       component: () => import('@/views/Hi.vue')
     },
     {
@@ -37,20 +37,24 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   start();
-  
   // 检查是否需要认证
   if (to.meta.requiresAuth) {
     const user = window.sessionStorage.getItem('user');
-    checkToken();
-    if (user && token.value!=='' && tokenValid.value) {
-
-      next();
-    } else {
+    checkToken().then(resp => {
+      if (user) {
+        next();
+      } else {
+        next({
+          path: '/login',
+          replace: true
+        });
+      }
+    }).catch(err => {
       next({
         path: '/login',
         replace: true
       });
-    }
+    });
   } else {
     next();
   }

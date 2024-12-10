@@ -133,7 +133,7 @@ export default {
     knowledgeID: '知识库id:',
     upload: '上传文档',
     addUrl: '添加网址',
-    homeTitle1: 'QAnything',
+    homeTitle1: '赛博辅导员',
     homeTitle2: '知识库问答',
     defaultDec: '构建文档知识库，高效检索文档信息，准确回答专业问题',
     defaultName: '默认知识库',

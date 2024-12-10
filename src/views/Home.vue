@@ -27,7 +27,7 @@ import OptionList from '@/components/OptionList.vue';
 
 const { showDefault } = storeToRefs(useKnowledgeBase());
 
-const { setDefault, getList } = useKnowledgeBase();
+const { setDefault, getList,setSelectList} = useKnowledgeBase();
 
 
 //开始回答后执行的操作
@@ -39,6 +39,8 @@ const change = str => {
 };
 
 onMounted(() => {
+  setDefault(pageStatus.normal);
+  setSelectList(['1']);
   getList();
 });
 </script>

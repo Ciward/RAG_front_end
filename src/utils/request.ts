@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { token } from '@/store/useToken';
+
 const request = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: token.value,
+    Authorization: window.sessionStorage.getItem('token'),
   },
 });
 

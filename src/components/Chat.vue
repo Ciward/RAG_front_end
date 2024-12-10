@@ -245,7 +245,7 @@ const { copy } = useClipboard();
 const { addHistoryList, updateHistoryList, addChatList, clearChatList } = useHomeChat();
 const { setChatSourceVisible, setSourceType, setSourceUrl, setTextContent } = useChatSource();
 const { language } = storeToRefs(useLanguage());
-const token = window.sessionStorage.getItem('token');
+
 declare module _czc {
   const push: (array: any) => void;
 } 
@@ -479,18 +479,18 @@ const send = async () => {
   //   return;
   // }
   checkKbSelect();
-  if (!selectList.value.length) {
-    return message.warning(common.chooseError);
-  } else {
-    // 校验选中的知识库
-    message.info({
-      content:
-        common.type === 'zh'
-          ? `已选择 ${selectList.value.length} 个知识库进行问答`
-          : ` ${selectList.value.length} knowledge base has been selected`,
-      icon: ' ',
-    });
-  }
+  // if (!selectList.value.length) {
+  //   return message.warning(common.chooseError);
+  // } else {
+  //   // 校验选中的知识库
+  //   message.info({
+  //     content:
+  //       common.type === 'zh'
+  //         ? `已选择 ${selectList.value.length} 个知识库进行问答`
+  //         : ` ${selectList.value.length} knowledge base has been selected`,
+  //     icon: ' ',
+  //   });
+  // }
   const q = question.value;
   beforeSend(q);
   question.value = '';
@@ -538,7 +538,7 @@ const send = async () => {
       headers: {
         'Content-Type': 'application/json',
         Accept: ['text/event-stream', 'application/json'],
-        Authorization: token,
+        Authorization: window.sessionStorage.getItem('token'),
       },
       //openWhenHidden: true,
       body: JSON.stringify({
