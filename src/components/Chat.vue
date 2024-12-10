@@ -245,9 +245,10 @@ const { copy } = useClipboard();
 const { addHistoryList, updateHistoryList, addChatList, clearChatList } = useHomeChat();
 const { setChatSourceVisible, setSourceType, setSourceUrl, setTextContent } = useChatSource();
 const { language } = storeToRefs(useLanguage());
+const token = window.sessionStorage.getItem('token');
 declare module _czc {
   const push: (array: any) => void;
-}
+} 
 
 //当前问的问题
 const question = ref('');
@@ -537,6 +538,7 @@ const send = async () => {
       headers: {
         'Content-Type': 'application/json',
         Accept: ['text/event-stream', 'application/json'],
+        Authorization: token,
       },
       //openWhenHidden: true,
       body: JSON.stringify({

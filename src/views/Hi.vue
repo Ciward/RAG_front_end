@@ -199,11 +199,13 @@ export default {
               this.fullscreenLoading = false;
             }, 1000);
             if (resp) {
-              userStore.setUserInfo(resp.obj);
+              let user = resp.obj;
+              user.token = resp.token;
+              userStore.setUserInfo(user);
+              window.sessionStorage.setItem('token', resp.token);
+              window.sessionStorage.setItem('user', JSON.stringify(user));
               
-              window.sessionStorage.setItem('user', JSON.stringify(resp.obj));
-              
-              console.log('Login response:', resp.obj);
+              console.log('Login response:', resp);
               
               let path = this.$route.query.redirect;
               this.$router.replace(path == '/' || path == undefined ? '/home' : path);
