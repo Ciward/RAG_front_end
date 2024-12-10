@@ -26,7 +26,7 @@ axios.interceptors.response.use(
     } else if (error.response.status == 401) {
       //请求要求用户的身份认证
       ElMessage.error({ message: '尚未登录，请登录' });
-      router.replace('/'); //跳转到登陆页
+      router.replace('/login'); //跳转到登陆页
     } else if (error.response.status == 404) {
       ElMessage.error({ message: '服务器无法根据客户端的请求找到资源' });
     } else if (error.response.status == 500) {
@@ -74,44 +74,48 @@ export const postKeyValueRequest = (url, params) => {
 /*
 封装“增加”请求方法——post
  */
-export const postRequest = (url, params) => {
+export const postRequest = (url, params,headers) => {
   return axios({
     method: 'post',
     url: `${base}${url}`,
     data: params,
+    headers: headers,
   });
 };
 
 /*
 封装“修改”请求方法——put
  */
-export const putRequest = (url, params) => {
+export const putRequest = (url, params,headers) => {
   return axios({
     method: 'put',
     url: `${base}${url}`,
     data: params,
+    headers: headers,
   });
 };
 
 /*
 封装“查询”请求方法——get
  */
-export const getRequest = (url, params) => {
+export const getRequest = (url, params,headers) => {
   console.log(`${url}`);
   return axios({
     method: 'get',
     url: `${base}${url}`,
     data: params,
+    headers: headers,
   });
 };
 
 /*
 封装“删除”请求方法——delete
  */
-export const deleteRequest = (url, params) => {
+export const deleteRequest = (url, params,headers) => {
   return axios({
     method: 'delete',
     url: `${base}${url}`,
     data: params,
+    headers: headers,
   });
 };

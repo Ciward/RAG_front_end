@@ -104,7 +104,8 @@
 import { getRequest } from '@/utils/api.js';
 import { postRequest, postKeyValueRequest } from '@/utils/api.js';
 import { useUser } from '@/store/useUser';
-
+import { token,tokenValid } from '@/store/useToken';
+import { checkToken } from '@/utils/utils';
 export default {
   name: 'Login',
   data() {
@@ -200,11 +201,11 @@ export default {
             }, 1000);
             if (resp) {
               let user = resp.obj;
-              user.token = resp.token;
               userStore.setUserInfo(user);
-              window.sessionStorage.setItem('token', resp.token);
+              token.value = resp.token;
+              tokenValid.value = true;
               window.sessionStorage.setItem('user', JSON.stringify(user));
-              
+
               console.log('Login response:', resp);
               
               let path = this.$route.query.redirect;

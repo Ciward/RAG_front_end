@@ -12,7 +12,6 @@ import { ref } from 'vue';
 
 // 修改接口定义以匹配后端返回的数据结构
 interface UserInfo {
-  token: string;
   id?: number;
   role?: string;
   username?: string;
@@ -35,13 +34,10 @@ interface UserInfo {
 export const useUser = defineStore(
   'user',
   () => {
-    const userInfo = ref<UserInfo>({
-      token: '',
-    });
+    const userInfo = ref<UserInfo>({});
 
     const setUserInfo = (info: any) => {
       userInfo.value = {
-        token: info.token,
         id: info.id,
         role: info.role,
         username: info.username,

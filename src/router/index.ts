@@ -9,7 +9,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { routes } from './routes';
 import { start, close } from '@/utils/nporgress';
-
+import { token, tokenValid } from '@/store/useToken';
+import { checkToken } from '@/utils/utils';
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -40,13 +41,13 @@ router.beforeEach((to, from, next) => {
   // 检查是否需要认证
   if (to.meta.requiresAuth) {
     const user = window.sessionStorage.getItem('user');
-    const token = window.sessionStorage.getItem('token');
-    if (user && token) {
+    checkToken();
+    if (user && token.value!=='' && tokenValid.value) {
+
       next();
     } else {
       next({
         path: '/login',
-
         replace: true
       });
     }
