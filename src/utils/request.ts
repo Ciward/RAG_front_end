@@ -1,11 +1,12 @@
 import axios from 'axios';
 
 const request = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_BACKEND_API_PREFIX,
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: window.sessionStorage.getItem('token'),
+    Accept: ['text/event-stream', 'application/json'],
+    'Authorization': window.sessionStorage.getItem('token'),
   },
 });
 
@@ -13,6 +14,9 @@ const request = axios.create({
 request.interceptors.request.use(
   config => {
     // 可以在这里添加token等认证信息
+    // config.url = config.baseURL + config.url;
+    // console.log(config.url);
+    // config.headers.Authorization = window.sessionStorage.getItem('token');
     return config;
   },
   error => {

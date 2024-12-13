@@ -107,8 +107,5 @@ export const routes: RouteRecordRaw[] = [
     name: 'share',
     component: () => import('@/views/bots/children/BotShare.vue'),
   },
-  {
-    path: '/:catchAll(.*)',
-    redirect: '/home',
-  },
+
 ];

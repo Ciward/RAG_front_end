@@ -9,7 +9,8 @@
 
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-
+import { getRequest } from '@/utils/api';
+import { message } from 'ant-design-vue';
 // 修改接口定义以匹配后端返回的数据结构
 interface UserInfo {
   id?: number;
@@ -58,10 +59,24 @@ export const useUser = defineStore(
       };
       console.log('Store updated userInfo:', userInfo.value);
     };
-
+    const updateUserInfo = () => {
+      return new Promise((resolve, reject) => {
+        getRequest('/user/getUserInfo').then((res) => {
+          console.log(res);
+          let user = res.obj;
+          setUserInfo(user);
+          resolve(res);
+        }).catch((err) => {
+          console.log(err);
+          message.error('更新用户信息失败');
+          reject(err);
+        });
+      });
+    };
     return {
       userInfo,
       setUserInfo,
+      updateUserInfo
     };
   },
   {

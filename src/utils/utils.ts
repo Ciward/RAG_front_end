@@ -9,7 +9,7 @@
 
 import { useUser } from '@/store/useUser';
 import { IChatSetting, IFileListItem, ITimeInfo, ITokenInfo } from './types';
-import { request } from './request';
+import { getRequest } from './api';
 
 export function addWindowsAttr(name, value) {
   window[name] = value;
@@ -19,7 +19,7 @@ export const checkToken = () => {
   //   valid.value=false;
   //   return false;
   // }
-  return request.get('/checkToken');
+  return getRequest('/checkToken');
 };
 export function getRandomString(strLen = 5) {
   const strCeils = 'abcdefghijklmnopqrstuvwxyz1234567890';

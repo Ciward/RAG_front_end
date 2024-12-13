@@ -21,14 +21,22 @@
         <p>账号状态: {{ userInfo.enabled ? '正常' : '禁用' }}</p>
       </div>
     </div>
+    
+    <template #footer>
+      <div style="text-align: right;">
+        <el-button type="danger" @click="handleLogout">退出登录</el-button>
+      </div>
+    </template>
   </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useUser } from '@/store/useUser';
 import { storeToRefs } from 'pinia';
-
+import { ElMessageBox } from 'element-plus';
+import router from '@/router';
+import { getRequest } from '@/utils/api';
 const userStore = useUser();
 const { userInfo } = storeToRefs(userStore);
 const dialogVisible = ref(false);
@@ -40,20 +48,32 @@ const handleClose = () => {
 };
 
 const showDialog = () => {
-  dialogVisible.value = true;
+  // 同步等待用户信息更新
+  userStore.updateUserInfo().then(() => {
+    dialogVisible.value = true;
+  });
+};
+
+const handleLogout = () => {
+  ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    getRequest('/logout').then(() => {
+      dialogVisible.value = false;
+      window.sessionStorage.removeItem('token');
+      router.push('/login');
+    });
+  }).catch(() => {});
 };
 
 defineExpose({
   showDialog
 });
 
-// onMounted(() => {
-//   if (!userInfo.value.token) {
-//     const storedUser = window.sessionStorage.getItem('user');
-//     if (storedUser) {
-//       userStore.setUserInfo(JSON.parse(storedUser));
-//     }
-//   }
+// onMounted(async () => {
+//   
 // });
 </script>
 

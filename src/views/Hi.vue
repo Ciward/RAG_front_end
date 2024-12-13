@@ -104,7 +104,7 @@
 import { getRequest } from '@/utils/api.js';
 import { postRequest, postKeyValueRequest } from '@/utils/api.js';
 import { useUser } from '@/store/useUser';
-
+import { apiBase } from '@/services/index';
 import { checkToken } from '@/utils/utils';
 export default {
   name: 'Login',
@@ -114,7 +114,8 @@ export default {
         callback(new Error('请输入昵称'));
       }
       //检查昵称是否重复
-      this.getRequest('user/checkNickname?nickname=' + value).then(resp => {
+      this.url = '/user/checkNickname?nickname=' + value;
+      getRequest(this.url).then(resp => {
         if (resp != 0) {
           callback(new Error('该昵称已被注册'));
         } else {
@@ -127,7 +128,8 @@ export default {
         callback(new Error('请输入用户名'));
       }
       //检查用户名是否重复
-      this.getRequest('/user/checkUsername?username=' + value).then(resp => {
+      this.url = '/user/checkUsername?username=' + value;
+      getRequest(this.url).then(resp => {
         if (resp != 0) {
           callback(new Error('该用户名已被注册'));
         } else {
@@ -160,7 +162,7 @@ export default {
         password: '',
         code: '',
       },
-      verifyCode: '/verifyCode',
+      verifyCode: apiBase + '/verifyCode',
       checked: true,
       rules: {
         username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -195,18 +197,18 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.fullscreenLoading = true;
-          postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
+          this.url = '/signin';
+          postKeyValueRequest(this.url, this.loginForm).then(resp => {
             setTimeout(() => {
               this.fullscreenLoading = false;
             }, 1000);
-            if (resp) {
+            if (resp.obj) {
+              console.log('Login response:', resp);
               let user = resp.obj;
               userStore.setUserInfo(user);
               window.sessionStorage.setItem('token', resp.token);
               window.sessionStorage.setItem('user', JSON.stringify(user));
-
-              console.log('Login response:', resp);
-              
+              this.$message.success('登录成功');
               let path = this.$route.query.redirect;
               this.$router.replace(path == '/' || path == undefined ? '/home' : path);
             } else {
@@ -219,9 +221,7 @@ export default {
         }
       });
     },
-    // changeverifyCode() {
-    //   this.verifyCode = '/verifyCode?time=' + new Date();
-    // },
+
     gotoAdminLogin() {
       this.$router.replace('/adminlogin');
     },
@@ -249,7 +249,8 @@ export default {
     submitRegisterForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          postRequest('/user/register', this.registerForm).then(resp => {
+          this.url = '/user/register';
+          postRequest(this.url, this.registerForm).then(resp => {
             if (resp) {
               this.$message.success('注册成功，请登录');
               this.registerDialogVisible = false;
@@ -264,21 +265,21 @@ export default {
       });
     },
     getVerifyCode() {
-      this.verifyCode = '/verifyCode?time=' + new Date().getTime();
-      getRequest(this.verifyCode).then(resp => {
-        if (resp) {
-          this.getCodeEnable = true;
-          let i = 30;
-          let id = setInterval(() => {
-            this.getCodeBtnText = i-- + 's内不能发送';
-          }, 1000);
-          setTimeout(() => {
-            clearInterval(id);
-            this.getCodeEnable = false;
-            this.getCodeBtnText = '获取邮箱验证码';
-          }, 30000);
-        }
-      });
+      this.verifyCode = apiBase + '/verifyCode?time=' + new Date().getTime();
+      // getRequest('/verifyCode?time=' + new Date().getTime()).then(resp => {
+      //   if (resp) {
+      //     this.getCodeEnable = true;
+      //     let i = 30;
+      //     let id = setInterval(() => {
+      //       this.getCodeBtnText = i-- + 's内不能发送';
+      //     }, 1000);
+      //     setTimeout(() => {
+      //       clearInterval(id);
+      //       this.getCodeEnable = false;
+      //       this.getCodeBtnText = '获取邮箱验证码';
+      //     }, 30000);
+      //   }
+      // });
     },
     // 上传中
     onProgress(event, file, fileList){

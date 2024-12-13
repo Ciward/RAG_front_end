@@ -1,18 +1,20 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import router from '../router';
-
+import { apiBase } from '../services';
 /*axios全局响应拦截*/
 axios.interceptors.response.use(
   success => {
-    if (success.status && success.status == 200 && success.data.status == 500) {
-      //请求成功，但处理出现其他错误
-      ElMessage.error({ message: success.data.msg });
-      return;
-    }
+    // if (success.status && success.status == 200 && success.data.status == 500) {
+    //   //请求成功，但处理出现其他错误
+    //   ElMessage.error({ message: success.data.msg });
+    //   return;
+    // }
     //请求成功且服务器处理无错误
     if (success.data.msg) {
-      ElMessage.success({ message: success.data.msg });
+      if (success.data.msg != 'valid' && success.data.msg != '') {
+        ElMessage.success({ message: success.data.msg });
+      }
     }
     return success.data;
   },
@@ -26,7 +28,7 @@ axios.interceptors.response.use(
     } else if (error.response.status == 401) {
       //请求要求用户的身份认证
       ElMessage.error({ message: '尚未登录，请登录' });
-      router.replace('/login'); //跳转到登陆页
+      //router.replace('/login'); //跳转到登陆页
     } else if (error.response.status == 404) {
       ElMessage.error({ message: '服务器无法根据客户端的请求找到资源' });
     } else if (error.response.status == 500) {
@@ -42,9 +44,7 @@ axios.interceptors.response.use(
   }
 );
 
-let base = '';
-
-import.meta.env.VITE_APP_MODE === 'dev' ? '' : import.meta.env.VITE_APP_API_HOST;
+let base = apiBase;
 
 /*
 登录请求方法，与服务端Spring Security的登录接口对接
@@ -75,11 +75,15 @@ export const postKeyValueRequest = (url, params) => {
 封装“增加”请求方法——post
  */
 export const postRequest = (url, params,headers) => {
+  console.log(`${base}${url}`);
   return axios({
     method: 'post',
     url: `${base}${url}`,
     data: params,
-    headers: headers,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: window.sessionStorage.getItem('token'),
+    },
   });
 };
 
@@ -87,11 +91,15 @@ export const postRequest = (url, params,headers) => {
 封装“修改”请求方法——put
  */
 export const putRequest = (url, params,headers) => {
+  console.log(`${base}${url}`);
   return axios({
     method: 'put',
     url: `${base}${url}`,
     data: params,
-    headers: headers,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: window.sessionStorage.getItem('token'),
+    },
   });
 };
 
@@ -99,12 +107,15 @@ export const putRequest = (url, params,headers) => {
 封装“查询”请求方法——get
  */
 export const getRequest = (url, params,headers) => {
-  console.log(`${url}`);
+  console.log(`${base}${url}`);
   return axios({
     method: 'get',
     url: `${base}${url}`,
     data: params,
-    headers: headers,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: window.sessionStorage.getItem('token'),
+    },
   });
 };
 
@@ -112,10 +123,14 @@ export const getRequest = (url, params,headers) => {
 封装“删除”请求方法——delete
  */
 export const deleteRequest = (url, params,headers) => {
+  console.log(`${base}${url}`);
   return axios({
     method: 'delete',
     url: `${base}${url}`,
     data: params,
-    headers: headers,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: window.sessionStorage.getItem('token'),
+    },
   });
 };

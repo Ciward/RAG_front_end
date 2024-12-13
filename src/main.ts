@@ -21,3 +21,4 @@ const vueApp = createApp(App);
 vueApp.use(pinia).use(router).use(ElementUI);
 vueApp.component('SvgIcon', SvgIcon);
 vueApp.mount('#app');
+

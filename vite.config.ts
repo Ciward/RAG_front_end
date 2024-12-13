@@ -108,7 +108,7 @@ export default defineConfig(({ mode }) => {
       outDir: `dist/qanything`,
     },
 
-    base: env.VITE_APP_WEB_PREFIX,
+    base: env.VITE_APP_WEB_HOST,
     server: {
       hmr: true,
       usePolling: true,
@@ -118,33 +118,59 @@ export default defineConfig(({ mode }) => {
       fs: {
         strict: false,
       },
-      cors: false,
+      cors: true,
       proxy: {
-        [env.VITE_APP_API_PREFIX]: {
-          target: env.VITE_APP_API_HOST,
+        ['/api']: {
+          target: env.VITE_BACKEND_API_HOST,
           changeOrigin: true,
           secure: false,
+          rewrite: (path) => path.replace(/^\/api/, ''),
         },
-        ['/verifyCode']: {
-          target: env.VITE_APP_API_HOST,
-          changeOrigin: true,
-          secure: false,
-        },
-        ['/doLogin']: {
-          target: env.VITE_APP_API_HOST,
-          changeOrigin: true,
-          secure: false,
-        },
-        ['/checkToken']: {
-          target: env.VITE_APP_API_HOST,
-          changeOrigin: true,
-          secure: false,
-        },
-        ['/local_doc_qa']: {
-          target: 'http://10.102.33.130:8777/api',
-          changeOrigin: true,
-          rewrite: path => path.replace(/^\/local_doc_qa/, '/local_doc_qa'),
-        },
+        // ['/verifyCode']: {
+        //   target: env.VITE_BACKEND_API_HOST,
+        //   changeOrigin: true,
+        //   secure: false,
+        // },
+        // ['/doLogin']: {
+        //   target: env.VITE_BACKEND_API_HOST,
+        //   changeOrigin: true,
+        //   secure: false,
+        // },
+        // ['/checkToken']: {
+        //   target: env.VITE_BACKEND_API_HOST,
+        //   changeOrigin: true,
+        //   secure: false,
+        // },
+        // ['/user/getUserInfo']: {
+        //   target: env.VITE_BACKEND_API_HOST,
+        //   changeOrigin: true,
+        //   secure: false,
+        // },
+        // ['/logout']: {
+        //   target: env.VITE_BACKEND_API_HOST,
+        //   changeOrigin: true,
+        //   secure: false,
+        // },
+        // ['/user/register']: {
+        //   target: env.VITE_BACKEND_API_HOST,
+        //   changeOrigin: true,
+        //   secure: false,
+        // },
+        // ['/stream/RAGFileChatStream']: {
+        //   target: env.VITE_BACKEND_API_HOST,
+        //   changeOrigin: true,
+        //   secure: false,
+        // },
+        // ['/user/checkUsername']: {
+        //   target: env.VITE_BACKEND_API_HOST,
+        //   changeOrigin: true,
+        //   secure: false,
+        // },
+        // ['/user/checkNickname']: {
+        //   target: env.VITE_BACKEND_API_HOST,
+        //   changeOrigin: true,
+        //   secure: false,
+        // },
       },
     },
   };

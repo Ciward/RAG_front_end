@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
   if(to.path==='/login'){
     const user = window.sessionStorage.getItem('user');
     checkToken().then(resp => {
-      if (user) {
+      if (user && resp.msg) {
         message.info('已登录,无需重复登录');
         next({
           path: '/home',
@@ -57,7 +57,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     const user = window.sessionStorage.getItem('user');
     checkToken().then(resp => {
-      if (user) {
+      if (user && resp.msg) {
         next();
       } else {
         // 显示token已过期
