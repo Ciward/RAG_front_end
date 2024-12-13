@@ -208,7 +208,7 @@ export default {
               userStore.setUserInfo(user);
               window.sessionStorage.setItem('token', resp.token);
               window.sessionStorage.setItem('user', JSON.stringify(user));
-              this.$message.success('登录成功');
+              //this.$message.success('登录成功');
               let path = this.$route.query.redirect;
               this.$router.replace(path == '/' || path == undefined ? '/home' : path);
             } else {
@@ -243,18 +243,17 @@ export default {
 
     closeRegisterDialog() {
       this.registerDialogVisible = false;
-      this.$refs.registerForm.resetFields();
+      //this.$refs.registerForm.resetFields();
       this.fileList = [];
     },
     submitRegisterForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.url = '/user/register';
-          postRequest(this.url, this.registerForm).then(resp => {
+          postRequest('/user/register', this.registerForm).then(resp => {
             if (resp) {
               this.$message.success('注册成功，请登录');
               this.registerDialogVisible = false;
-              this.$refs.registerForm.resetFields();
+              //this.$refs.registerForm.resetFields();
               this.fileList = [];
             }
           });

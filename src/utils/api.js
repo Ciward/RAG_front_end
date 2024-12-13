@@ -81,7 +81,7 @@ export const postRequest = (url, params,headers) => {
     url: `${base}${url}`,
     data: params,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
       Authorization: window.sessionStorage.getItem('token'),
     },
   });
