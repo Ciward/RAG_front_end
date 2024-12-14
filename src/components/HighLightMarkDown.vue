@@ -100,7 +100,11 @@ watch(
   /* text-align: left; */
   margin: 0;
 }
-
+.high-light-comp .scrollable-content {
+  max-height: 800px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
 .hight-light-comp td {
   border: 1px solid #dbdbdb;
   padding: 4px;

@@ -204,6 +204,7 @@
   </div>
   <ChatSettingDialog ref="chatSettingForDialogRef" />
   <DefaultModal :content="content" :confirm-loading="confirmLoading" @ok="confirm" />
+  <ChatSourceDialog v-if="chatSourceVisible" />
 </template>
 <script lang="ts" setup>
 import { apiBase } from '@/services';
@@ -229,6 +230,7 @@ import { useHomeChat } from '@/store/useHomeChat';
 import HighLightMarkDown from '@/components/HighLightMarkDown.vue';
 import { useChatSetting } from '@/store/useChatSetting';
 import ChatInfoPanel from '@/components/ChatInfoPanel.vue';
+import ChatSourceDialog from './ChatSourceDialog.vue';
 
 const common = getLanguage().common;
 
@@ -787,6 +789,8 @@ function clearHistory() {
   console.log('清空');
   // history.value = [];
 }
+
+const { chatSourceVisible } = storeToRefs(useChatSource());
 </script>
 
 <style lang="scss" scoped>
