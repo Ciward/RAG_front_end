@@ -233,7 +233,7 @@ import { useChatSetting } from '@/store/useChatSetting';
 import ChatInfoPanel from '@/components/ChatInfoPanel.vue';
 import ChatSourceDialog from './ChatSourceDialog.vue';
 import { Modal } from 'ant-design-vue';
-
+import { postRequest } from '@/utils/api.js';
 const common = getLanguage().common;
 
 const typewriter = new Typewriter((str: string) => {
@@ -804,21 +804,9 @@ const handleTransferHuman = (item: IChatItem) => {
     okText: '是',
     cancelText: '否',
     async onOk() {
-      try {
-        // 使用与 sendQuestion 相似的格式
-        const res = await urlResquest.addQuestion({
-          content: item.question
-        });
-        
-        if(res && res.status === 200) {
-          message.success(res.msg || '已转人工处理');
-        } else {
-          message.error(res.msg || '转人工失败');
-        }
-      } catch(e) {
-        console.error('转人工失败:', e);
-        message.error('转人工失败');
-      }
+      await postRequest('/QA/addQuestion', {
+        content: item.question
+      });
     }
   });
 };

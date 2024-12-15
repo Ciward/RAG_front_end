@@ -65,26 +65,27 @@ export const useKnowledgeBase = defineStore(
 
     //获取知识库列表
     const getList = async () => {
-      try {
-        const res: any = await urlResquest.kbList();
-        if (+res.code === 200) {
-          if (res?.data?.length > 0) {
-            const list = res.data.filter(item => !/.*_FAQ$/.test(item.kb_name));
-            setKnowledgeBaseList(list);
-            setDefault(pageStatus.normal);
+      // try {
+      //   const res: any = await urlResquest.kbList();
+      //   if (+res.code === 200) {
+      //     if (res?.data?.length > 0) {
+      //       const list = res.data.filter(item => !/.*_FAQ$/.test(item.kb_name));
+      //       setKnowledgeBaseList(list);
+      //       setDefault(pageStatus.normal);
 
-            if (!selectList.value.length) {
-              selectList.value.push(list[0]?.kb_id);
-            }
-          } else {
-            setKnowledgeBaseList([]);
-            setDefault(pageStatus.default);
-          }
-        }
-        console.log(knowledgeBaseList.value);
-      } catch (e) {
-        message.error(e.msg || common.error);
-      }
+      //       if (!selectList.value.length) {
+      //         selectList.value.push(list[0]?.kb_id);
+      //       }
+      //     } else {
+      //       setKnowledgeBaseList([]);
+      //       setDefault(pageStatus.default);
+      //     }
+      //   }
+      //   console.log(knowledgeBaseList.value);
+      // } catch (e) {
+      //   message.error(e.msg || common.error);
+      // }
+      return;
     };
 
     return {
