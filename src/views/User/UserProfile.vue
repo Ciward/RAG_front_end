@@ -10,12 +10,12 @@
         <img :src="userInfo.userProfile || defaultAvatar" alt="用户头像" class="avatar" />
       </div>
       <div class="info-section">
-        <h2>{{ userInfo.nickname }}</h2>
+        <h2>{{ userInfo.username }}</h2>
         <p>用户名: {{ userInfo.username }}</p>
         <p>姓名: {{ userInfo.name }}</p>
         <p>学号: {{ userInfo.studentId }}</p>
-        <p>角色: {{ userInfo.role }}</p>
-        <p>性别: {{ userInfo.gender }}</p>
+        <p>角色: {{ userInfo.role === 'admin' ? '管理员' : '用户' }}</p>
+        <p>性别: {{ userInfo.gender === 'male' ? '男' : '女' }}</p>
         <p>民族: {{ userInfo.nation }}</p>
         <p>生源地: {{ userInfo.hometown }}</p>
         <p>账号状态: {{ userInfo.enabled ? '正常' : '禁用' }}</p>

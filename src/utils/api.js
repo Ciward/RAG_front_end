@@ -5,11 +5,11 @@ import { apiBase } from '../services';
 /*axios全局响应拦截*/
 axios.interceptors.response.use(
   success => {
-    // if (success.status && success.status == 200 && success.data.status == 500) {
-    //   //请求成功，但处理出现其他错误
-    //   ElMessage.error({ message: success.data.msg });
-    //   return;
-    // }
+    if (success.status && success.status == 200 && success.data.status == 500) {
+      //请求成功，但处理出现其他错误
+      ElMessage.error({ message: success.data.msg });
+      return;
+    }
     //请求成功且服务器处理无错误
     if (success.data.msg) {
       if (success.data.msg != 'valid' && success.data.msg != '') {
@@ -97,7 +97,7 @@ export const putRequest = (url, params,headers) => {
     url: `${base}${url}`,
     data: params,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
       Authorization: window.sessionStorage.getItem('token'),
     },
   });
@@ -113,7 +113,7 @@ export const getRequest = (url, params,headers) => {
     url: `${base}${url}`,
     data: params,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
       Authorization: window.sessionStorage.getItem('token'),
     },
   });
@@ -129,7 +129,7 @@ export const deleteRequest = (url, params,headers) => {
     url: `${base}${url}`,
     data: params,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
       Authorization: window.sessionStorage.getItem('token'),
     },
   });

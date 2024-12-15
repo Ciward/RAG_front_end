@@ -59,9 +59,6 @@
         </el-form>
         <el-form ref="registerForm" :model="registerForm" status-icon :rules="registerRules" v-if="registerDialogVisible">
           <h3 class="loginTitle">新用户注册</h3>
-          <el-form-item label="用户昵称：" :label-width="formLabelWidth" prop="nickname">
-            <el-input v-model="registerForm.nickname" autocomplete="off"></el-input>
-          </el-form-item>
           <el-form-item label="登录用户名：" :label-width="formLabelWidth" prop="username">
             <el-input v-model="registerForm.username" autocomplete="off"></el-input>
           </el-form-item>
@@ -70,6 +67,24 @@
           </el-form-item>
           <el-form-item label="确认密码：" :label-width="formLabelWidth" prop="checkPass">
             <el-input v-model="registerForm.checkPass" type="password" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="姓名：" :label-width="formLabelWidth" prop="name">
+            <el-input v-model="registerForm.name" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="学号：" :label-width="formLabelWidth" prop="studentId">
+            <el-input v-model="registerForm.studentId" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="性别：" :label-width="formLabelWidth" prop="gender">
+            <el-select v-model="registerForm.gender" placeholder="请选择性别">
+              <el-option label="男" value="male"></el-option>
+              <el-option label="女" value="female"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="民族：" :label-width="formLabelWidth" prop="nation">
+            <el-input v-model="registerForm.nation" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="生源地：" :label-width="formLabelWidth" prop="hometown">
+            <el-input v-model="registerForm.hometown" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="用户头像：" :label-width="formLabelWidth">
             <el-upload
@@ -109,20 +124,6 @@ import { checkToken } from '@/utils/utils';
 export default {
   name: 'Login',
   data() {
-    var validateNickname = (_rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入昵称'));
-      }
-      //检查昵称是否重复
-      this.url = '/user/checkNickname?nickname=' + value;
-      getRequest(this.url).then(resp => {
-        if (resp != 0) {
-          callback(new Error('该昵称已被注册'));
-        } else {
-          callback();
-        }
-      });
-    };
     var validateUsername = (_rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入用户名'));
@@ -174,17 +175,25 @@ export default {
       registerDialogVisible: false,
       formLabelWidth: '120px',
       registerForm: {
-        nickname: '',
         username: '',
         password: '',
         checkPass: '',
+        name: '',
+        studentId: '',
+        gender: '',
+        nation: '',
+        hometown: '',
         userProfile: 'default_head.jpg',
       },
       registerRules: {
-        nickname: [{ validator: validateNickname, trigger: 'blur' }],
         username: [{ validator: validateUsername, trigger: 'blur' }],
         password: [{ validator: validatePass, trigger: 'blur' }],
         checkPass: [{ validator: validatePass2, trigger: 'blur' }],
+        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+        studentId: [{ required: true, message: '请输入学号', trigger: 'blur' }],
+        gender: [{ required: true, message: '请选择性别', trigger: 'change' }],
+        nation: [{ required: true, message: '请输入民族', trigger: 'blur' }],
+        hometown: [{ required: true, message: '请输入生源地', trigger: 'blur' }],
       },
       uploadDisabled: false,
       //上传的文件信息列表

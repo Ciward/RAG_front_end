@@ -16,7 +16,6 @@ interface UserInfo {
   id?: number;
   role?: string;
   username?: string;
-  nickname?: string;
   password?: string | null;
   userProfile?: string;
   userStateId?: number;
@@ -42,7 +41,6 @@ export const useUser = defineStore(
         id: info.id,
         role: info.role,
         username: info.username,
-        nickname: info.nickname,
         password: info.password,
         userProfile: info.userProfile,
         userStateId: info.userStateId,
