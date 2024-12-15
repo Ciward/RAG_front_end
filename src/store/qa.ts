@@ -9,68 +9,170 @@ export const useQaStore = defineStore('qa', () => {
   const pageSize = 10;
 
   const fetchQuestions = async () => {
-    allQuestions.value = Array.from({ length: 20 }, (_, i) => ({
-      id: i + 1,
-      title: `问题 ${i + 1}: 这是一个示例问题标题`,
-      expanded: false,
-      solved: false,
-      answers: [],
-    }));
-    questions.value = allQuestions.value.slice(0, pageSize);
+    try {
+      const response = await fetch('/QA/getQuestionsByPage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + yourToken, // 替换为实际的令牌
+        },
+        body: JSON.stringify({
+          page: 1,
+          size: pageSize,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        questions.value = data.data;
+      } else {
+        throw new Error('获取问题列表失败');
+      }
+    } catch (error) {
+      message.error('获取问题列表失败，请重试');
+    }
   };
 
   const loadMoreQuestions = async () => {
-    const currentLength = questions.value.length;
-    const moreQuestions = allQuestions.value.slice(currentLength, currentLength + pageSize);
-    questions.value = questions.value.concat(moreQuestions);
-    page.value += 1;
-    return moreQuestions;
+    try {
+      const response = await fetch('/QA/getQuestionsByPage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + yourToken, // 替换为实际的令牌
+        },
+        body: JSON.stringify({
+          page: page.value + 1,
+          size: pageSize,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data.length > 0) {
+          questions.value = questions.value.concat(data.data);
+          page.value += 1;
+        } else {
+          noMoreQuestions.value = true;
+        }
+      } else {
+        throw new Error('加载更多问题失败');
+      }
+    } catch (error) {
+      message.error('加载更多问题失败，请重试');
+    }
   };
 
   const fetchAnswers = async (questionId: number) => {
-    const answers: Answer[] = [
-      {
-        id: 101,
-        questionId,
-        username: '当前用户',
-        content: '这是当前用户的回答，待审核...',
-        status: 'pending',
-        createTime: new Date().toISOString(),
-      },
-      {
-        id: 102,
-        questionId,
-        username: '当前用户',
-        content: '这是当前用户的回答，已通过审核。',
-        status: 'approved',
-        createTime: new Date().toISOString(),
-      },
-      {
-        id: 103,
-        questionId,
-        username: '当前用户',
-        content: '这是当前用户的回答，未通过审核。',
-        status: 'rejected',
-        createTime: new Date().toISOString(),
-      },
-      {
-        id: 104,
-        questionId,
-        username: '其他用户',
-        content: '这是其他用户的回答。',
-        status: 'approved',
-        createTime: new Date().toISOString(),
-      },
-    ];
+    try {
+      const response = await fetch('/QA/getAnswersByQuestionId', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + yourToken, // 替换为实际的令牌
+        },
+        body: JSON.stringify({
+          questionId,
+        }),
+      });
 
-    const question = questions.value.find(q => q.id === questionId);
-    if (question) {
-      question.answers = answers;
+      if (response.ok) {
+        const data = await response.json();
+        const question = questions.value.find(q => q.id === questionId);
+        if (question) {
+          question.answers = data.data;
+        }
+      } else {
+        throw new Error('获取答案列表失败');
+      }
+    } catch (error) {
+      message.error('获取答案列表失败，请重试');
     }
   };
 
   const initTestData = () => {
     fetchQuestions();
+  };
+
+  const submitAnswer = async () => {
+    if (!currentQuestion.value || !newAnswer.value.trim()) {
+      message.warning('请输入回答内容');
+      return;
+    }
+
+    try {
+      const response = await fetch('/QA/answerQuestion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + yourToken, // 替换为实际的令牌
+        },
+        body: JSON.stringify({
+          questionId: currentQuestion.value.id,
+          answerStr: newAnswer.value,
+        }),
+      });
+
+      if (response.ok) {
+        message.success('回答提交成功');
+        answerDialogVisible.value = false;
+        await expandQuestion(currentQuestion.value);
+      } else {
+        throw new Error('提交失败');
+      }
+    } catch (error) {
+      message.error('提交失败，请重试');
+    }
+  };
+
+  const approveAnswer = async (answer) => {
+    try {
+      const response = await fetch('/QA/checkAnswer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + yourToken, // 替换为实际的令牌
+        },
+        body: JSON.stringify({
+          answerId: answer.id,
+          valid: 1, // 1表示通过
+        }),
+      });
+
+      if (response.ok) {
+        answer.status = 'approved';
+        message.success('答案已通过审核');
+      } else {
+        throw new Error('审核失败');
+      }
+    } catch (error) {
+      message.error('审核失败，请重试');
+    }
+  };
+
+  const rejectAnswer = async (answer) => {
+    try {
+      const response = await fetch('/QA/checkAnswer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + yourToken, // 替换为实际的令牌
+        },
+        body: JSON.stringify({
+          answerId: answer.id,
+          valid: 0, // 0表示不通过
+        }),
+      });
+
+      if (response.ok) {
+        answer.status = 'rejected';
+        message.success('答案已被拒绝');
+      } else {
+        throw new Error('审核失败');
+      }
+    } catch (error) {
+      message.error('审核失败，请重试');
+    }
   };
 
   return {
@@ -79,5 +181,8 @@ export const useQaStore = defineStore('qa', () => {
     loadMoreQuestions,
     fetchAnswers,
     initTestData,
+    submitAnswer,
+    approveAnswer,
+    rejectAnswer,
   };
 });

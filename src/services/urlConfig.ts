@@ -35,6 +35,7 @@ enum EUrlKey {
   sendQuestion = 'sendQuestion',
   getQAInfo = 'getQAInfo',
   getKbInfo = 'getKbInfo',
+  addQuestion = 'addQuestion',
 }
 
 interface IUrlValueConfig {
@@ -46,6 +47,7 @@ interface IUrlValueConfig {
   cancelRepeat?: boolean;
   sign?: boolean; // 是否开启签名
   param?: any;
+  headers?: any;
 
   [key: string]: any;
 }
@@ -233,6 +235,15 @@ const urlConfig: IUrlConfig = {
     param: {
       user_id: userId,
     },
+  },
+  // 添加转人工问题接口
+  addQuestion: {
+    type: EUrlType.POST,
+    url: '/QA/addQuestion',
+    showLoading: true,
+    param: {
+      user_id: userId,
+    }
   },
 };
 

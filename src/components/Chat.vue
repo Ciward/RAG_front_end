@@ -134,6 +134,7 @@
                         name="unlike"
                         @click="unlike(item)"
                       ></SvgIcon>
+                      <span class="transfer-human" @click="handleTransferHuman(item)">转人工</span>
                     </div>
                   </div>
                 </div>
@@ -231,6 +232,7 @@ import HighLightMarkDown from '@/components/HighLightMarkDown.vue';
 import { useChatSetting } from '@/store/useChatSetting';
 import ChatInfoPanel from '@/components/ChatInfoPanel.vue';
 import ChatSourceDialog from './ChatSourceDialog.vue';
+import { Modal } from 'ant-design-vue';
 
 const common = getLanguage().common;
 
@@ -275,7 +277,7 @@ const observeDom = ref(null);
 // 问答列表被监听的元素
 const qaObserveDom = ref(null);
 
-//取消请求用
+//取消请用
 let ctrl: AbortController;
 
 const chatContainer = ref(null);
@@ -422,7 +424,7 @@ function checkKbSelect() {
   if (!selectList.value.length) {
     return;
   }
-  // 删除知识库时不删除对话里表中已选中的知识库id  所以每次问答前都要校验一下这个知识库id还存不存在
+  // 删除知识库时不删除对话里选中的识库id  所以每次问答前都要校验一下这个知识库id还存不存在
   const list = [];
   selectList.value.forEach(kbId => {
     if (knowledgeBaseList.value.some(item => item.kb_id === kbId)) {
@@ -488,7 +490,7 @@ const send = async () => {
   //   message.info({
   //     content:
   //       common.type === 'zh'
-  //         ? `已选择 ${selectList.value.length} 个知识库进行问答`
+  //         ? `已选择 ${selectList.value.length} 个知识库进行问`
   //         : ` ${selectList.value.length} knowledge base has been selected`,
   //     icon: ' ',
   //   });
@@ -791,6 +793,35 @@ function clearHistory() {
 }
 
 const { chatSourceVisible } = storeToRefs(useChatSource());
+
+const handleTransferHuman = (item: IChatItem) => {
+  Modal.confirm({
+    title: '上一次询问的问题',
+    content: h('div', {}, [
+      h('p', item.question),
+      h('p', '是否需要转人工回答？人工回答可以提供更详细的解答。')
+    ]),
+    okText: '是',
+    cancelText: '否',
+    async onOk() {
+      try {
+        // 使用与 sendQuestion 相似的格式
+        const res = await urlResquest.addQuestion({
+          content: item.question
+        });
+        
+        if(res && res.status === 200) {
+          message.success(res.msg || '已转人工处理');
+        } else {
+          message.error(res.msg || '转人工失败');
+        }
+      } catch(e) {
+        console.error('转人工失败:', e);
+        message.error('转人工失败');
+      }
+    }
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -1012,6 +1043,17 @@ $avatar-width: 96px;
 
         svg {
           margin-left: 16px;
+        }
+
+        .transfer-human {
+          margin-left: 16px;
+          color: #666666;
+          cursor: pointer;
+          font-size: 14px;
+          
+          &:hover {
+            color: #4D71FF;
+          }
         }
       }
 
