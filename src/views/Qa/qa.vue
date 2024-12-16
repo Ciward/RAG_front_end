@@ -67,18 +67,20 @@ import type { Question } from './types';
 import { useQaStore } from '@/store/qa';
 import { storeToRefs } from 'pinia';
 import moment from 'moment';
+import { useUser } from '@/store/useUser';
 
+const userStore = useUser();
 const qaStore = useQaStore();
-const { questions } = storeToRefs(qaStore);
+const { questions, loading, noMoreQuestions } = storeToRefs(qaStore);
 const answerDialogVisible = ref(false);
 const currentQuestion = ref<Question | null>(null);
 const newAnswer = ref('');
 const isAdmin = ref(true); // 假设从某处获取用户角色信息
-const loading = ref(false);
-const noMoreQuestions = ref(false);
 const currentUser = '当前用户'; // 假设从某处获取当前用户名
 
 onMounted(async () => {
+  await userStore.updateUserInfo(); // 确保在获取问题之前更新用户信息
+  isAdmin.value = userStore.userInfo.role === 'admin'; // 根据角色设置 isAdmin
   await qaStore.fetchQuestions();
 });
 
@@ -111,14 +113,22 @@ const submitAnswer = async () => {
   }
 };
 
-const approveAnswer = answer => {
-  answer.status = 'approved';
-  // 这里可以添加 API 调用以更新后端状态
+const approveAnswer = async (answer) => {
+  try {
+    await qaStore.approveAnswer(answer);
+    message.success('答案已通过审核');
+  } catch (error) {
+    message.error('审核失败，请重试');
+  }
 };
 
-const rejectAnswer = answer => {
-  answer.status = 'rejected';
-  // 这里可以添加 API 调用以更新后端状态
+const rejectAnswer = async (answer) => {
+  try {
+    await qaStore.rejectAnswer(answer);
+    message.success('答案已被拒绝');
+  } catch (error) {
+    message.error('审核失败，请重试');
+  }
 };
 
 const formatDate = (date: string) => {
@@ -128,25 +138,20 @@ const formatDate = (date: string) => {
 const handleScroll = async (event: Event) => {
   const target = event.target as HTMLElement;
   if (target.scrollHeight - target.scrollTop <= target.clientHeight + 1) {
-    if (!loading.value && !noMoreQuestions.value) {
-      loading.value = true;
-      try {
-        await qaStore.loadMoreQuestions();
-        if (questions.value.length === 0) {
-          noMoreQuestions.value = true;
-        }
-      } catch (error) {
-        message.error('加载失败，请重试');
-      } finally {
-        loading.value = false;
-      }
-    }
+    await qaStore.loadMoreQuestions();
   }
 };
 
-const toggleQuestionStatus = question => {
-  question.solved = !question.solved;
-  // 这里可以添加 API 调用以更新后端状态
+const toggleQuestionStatus = async (question: Question) => {
+  try {
+    const newStatus = !question.finished;
+    console.log(111);
+    await qaStore.setQuestionfinished(question.id, newStatus);
+    console.log(question.id);
+    question.finished = newStatus;
+  } catch (error) {
+    message.error('更新问题状态失败，请重试');
+  }
 };
 
 const getStatusClass = status => {

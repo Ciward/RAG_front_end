@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { Question, Answer } from '@/views/Qa/types';
+import type { Question } from '@/views/Qa/types';
 import { postRequest } from '@/utils/api.js';
 import { ElMessage } from 'element-plus';
 export const useQaStore = defineStore('qa', () => {
   const questions = ref<Question[]>([]);
-  const allQuestions = ref<Question[]>([]);
   const page = ref(1);
   const pageSize = 10;
+  const loading = ref(false);
+  const noMoreQuestions = ref(false);
 
   const fetchQuestions = async () => {
     await postRequest('/QA/getQuestionsByPage', {
@@ -21,15 +22,27 @@ export const useQaStore = defineStore('qa', () => {
   };
 
   const loadMoreQuestions = async () => {
+    if (loading.value || noMoreQuestions.value) return;
+
+    loading.value = true;
     page.value++;
-    await postRequest('/QA/getQuestionsByPage', {
-      page: page.value,
-      size: pageSize,
-    }).then(response => {
+
+    try {
+      const response = await postRequest('/QA/getQuestionsByPage', {
+        page: page.value,
+        size: pageSize,
+      });
+
+      if (response.obj.length < pageSize) {
+        noMoreQuestions.value = true;
+      }
+
       questions.value.push(...response.obj);
-    }).catch(error => {
+    } catch (error) {
       ElMessage.error('获取问题列表失败，请重试');
-    });
+    } finally {
+      loading.value = false;
+    }
   };
 
   const fetchAnswers = async (questionId: number) => {
@@ -99,13 +112,35 @@ export const useQaStore = defineStore('qa', () => {
     });
   };
 
+  const setQuestionfinished = async (questionId: number, finished: boolean) => {
+    await postRequest('/QA/setQuestionFinished', {
+      questionId: questionId,
+      finished: finished,
+    }).then(response => {
+      if (response.msg) {
+        const question = questions.value.find(q => q.id === questionId);
+        if (question) {
+          question.finished = finished;
+        }
+        //ElMessage.success('问题状态已更新');
+      } else {
+        throw new Error('更新失败');
+      }
+    }).catch(error => {
+      ElMessage.error('更新失败，请重试');
+    });
+  };
+
   return {
     questions,
+    loading,
+    noMoreQuestions,
     fetchQuestions,
     loadMoreQuestions,
     fetchAnswers,
     submitAnswer,
     approveAnswer,
     rejectAnswer,
+    setQuestionfinished,
   };
 });
