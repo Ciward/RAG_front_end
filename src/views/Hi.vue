@@ -223,6 +223,9 @@ export default {
             } else {
               this.getVerifyCode();
             }
+          }).catch(error => {
+            console.error('Error:', error);
+            this.getVerifyCode();
           });
         } else {
           this.$message.error('用户名,密码和验证码都不能为空！');
@@ -260,7 +263,7 @@ export default {
         if (valid) {
           postRequest('/user/register', this.registerForm).then(resp => {
             if (resp) {
-              this.$message.success('注册成功，请登录');
+              // this.$message.success('注册成功，请登录');
               this.registerDialogVisible = false;
               //this.$refs.registerForm.resetFields();
               this.fileList = [];

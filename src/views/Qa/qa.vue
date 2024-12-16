@@ -3,7 +3,7 @@
     <div class="qa-list">
       <div v-for="question in questions" :key="question.id" class="qa-item">
         <div class="question-header">
-          <h3>{{ question.title }}</h3>
+          <h3>{{ question.content }}</h3>
           <div class="button-group">
             <a-button size="small" @click="expandQuestion(question)">
               {{ question.expanded ? '收起' : '展开' }}
@@ -12,7 +12,7 @@
               回答
             </a-button>
             <a-button v-if="isAdmin" size="small" @click="toggleQuestionStatus(question)">
-              {{ question.solved ? '标记为未解决' : '标记为已解决' }}
+              {{ question.finished ? '标记为未解决' : '标记为已解决' }}
             </a-button>
           </div>
         </div>
@@ -49,7 +49,7 @@
     >
       <div class="original-question">
         <h4>原问题：</h4>
-        <p>{{ currentQuestion?.title }}</p>
+        <p>{{ currentQuestion?.content }}</p>
       </div>
       <a-form>
         <a-form-item>
@@ -79,19 +79,14 @@ const noMoreQuestions = ref(false);
 const currentUser = '当前用户'; // 假设从某处获取当前用户名
 
 onMounted(async () => {
-  qaStore.initTestData(); // 调用初始化测试数据的方法
   await qaStore.fetchQuestions();
 });
 
 const expandQuestion = async (question: Question) => {
-  try {
-    if (!question.expanded) {
-      await qaStore.fetchAnswers(question.id);
-    }
-    question.expanded = !question.expanded;
-  } catch (error) {
-    message.error('加载回答失败，请重试');
+  if (!question.expanded) {
+    await qaStore.fetchAnswers(question.id);
   }
+  question.expanded = !question.expanded;
 };
 
 const showAnswerDialog = (question: Question) => {
@@ -107,10 +102,7 @@ const submitAnswer = async () => {
   }
 
   try {
-    await qaStore.submitAnswer({
-      questionId: currentQuestion.value.id,
-      content: newAnswer.value,
-    });
+    await qaStore.submitAnswer(currentQuestion.value.id, newAnswer.value);
     message.success('回答提交成功');
     answerDialogVisible.value = false;
     await expandQuestion(currentQuestion.value);
@@ -139,8 +131,8 @@ const handleScroll = async (event: Event) => {
     if (!loading.value && !noMoreQuestions.value) {
       loading.value = true;
       try {
-        const moreQuestions = await qaStore.loadMoreQuestions();
-        if (moreQuestions.length === 0) {
+        await qaStore.loadMoreQuestions();
+        if (questions.value.length === 0) {
           noMoreQuestions.value = true;
         }
       } catch (error) {

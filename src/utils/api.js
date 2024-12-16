@@ -113,7 +113,7 @@ export const getRequest = (url, params,headers) => {
     url: `${base}${url}`,
     data: params,
     headers: {
-      'Content-Type': 'application/json',
+
       Authorization: window.sessionStorage.getItem('token'),
     },
   });

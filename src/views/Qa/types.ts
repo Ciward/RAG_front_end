@@ -1,8 +1,9 @@
 export interface Question {
   id: number
-  title: string
+  content: string
   expanded?: boolean
   answers?: Answer[]
+  finished?: boolean
 }
 
 export interface Answer {
